@@ -1,0 +1,1078 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr"><head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>MySQL存取大文本及二进制文件(图片) - 宋建勇 - ITeye博客</title>
+    <meta name="description" content="package cn.com.songjy.test.db;    import java.io.BufferedInputStream;  import java.io.BufferedOutputStream;  import java.io.BufferedReader;  import java.io.BufferedWriter;  import java.io.File;  import ...">
+    <meta name="keywords" content="mysql, jdbc, clob, blob, 图片 MySQL存取大文本及二进制文件(图片)">
+    <link rel="shortcut icon" href="http://songjianyong.iteye.com/images/favicon.ico" type="image/x-icon">
+    <link rel="search" type="application/opensearchdescription+xml" href="http://songjianyong.iteye.com/open_search.xml" title="ITeye">
+    <link href="http://songjianyong.iteye.com/rss" rel="alternate" title="宋建勇" type="application/rss+xml">
+    <link href="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/blog.css" media="screen" rel="stylesheet" type="text/css">
+<link href="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/purple.css" media="screen" rel="stylesheet" type="text/css">
+    <script type="text/javascript" async="" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/pr.js"></script><script type="text/javascript" async="" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/rlptepi.js"></script><script charset="utf-8" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/b.js"></script><script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/push.js"></script><script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/hm.txt"></script><script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/application.js" type="text/javascript"></script>    
+    <script>
+    var _hmt = _hmt || [];
+    (function() {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?e19a8b00cf63f716d774540875007664";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+
+
+        //自动推送工具代码
+        var bp = document.createElement('script');
+        var curProtocol = window.location.protocol.split(':')[0];
+        if (curProtocol === 'https') {
+            bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+        }
+        else {
+            bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+        }
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(bp, s);
+    })();
+</script>
+
+
+
+      <link href="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/SyntaxHighlighter.css" media="screen" rel="stylesheet" type="text/css">
+  <script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/shCoreCommon.js" type="text/javascript"></script>
+<script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/hotkey.js" type="text/javascript"></script>
+  <script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/code_favorites.js" type="text/javascript"></script>
+<script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/weiboshare.js" type="text/javascript"></script>
+
+    <!-- 请置于所有广告位代码之前 -->
+    <script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/ds.js"></script>
+    <link ref="canonical" href="http://songjianyong.iteye.com/blog/1961765">
+    <script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/c.js"></script><style type="text/css">.dp-j .annotation { color: #646464; }.dp-j .number { color: #C00000; }</style><style type="text/css">.dp-j .annotation { color: #646464; }.dp-j .number { color: #C00000; }</style></head><body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/o.htm" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><script onload="window['cambrian_sync_loader_success1535712467357801']()" onerror="window['cambrian_sync_loader_fail_1535712467357801']()" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/main.js"></script>
+  
+  
+    <div id="header">
+	      <div id="blog_site_nav">
+  <a href="http://www.iteye.com/" class="homepage">首页</a>
+  <a href="http://www.iteye.com/news">资讯</a>
+  <a href="http://www.iteye.com/magazines">精华</a>
+  <a href="http://www.iteye.com/forums">论坛</a>
+  <a href="http://www.iteye.com/ask">问答</a>
+  <a href="http://www.iteye.com/blogs">博客</a>
+  <a href="http://www.iteye.com/blogs/subjects">专栏</a>
+  <a href="http://www.iteye.com/groups">群组</a>
+  <a href="#" onclick="return false;" id="msna"><u>更多</u> <small>▼</small></a>
+  <div class="quick_menu" style="display:none;">
+    <a target="_blank" href="http://job.iteye.com/iteye">知识库</a>
+    <a href="http://www.iteye.com/search">搜索</a>
+  </div>
+</div>
+
+	      <div id="user_nav">
+
+      <a href="http://songjianyong.iteye.com/login" class="welcome" title="登录">您还未登录 !</a>
+    <a href="http://songjianyong.iteye.com/login">登录</a>
+    <!--<a href="/signup" class="nobg">注册</a>-->
+    <!--<a href="http://passport.csdn.net/account/mobileregister?from=http://www.iteye.com">注册</a>-->
+  </div>
+
+	    
+    </div>
+
+    <div id="page">
+        <div id="branding" class="clearfix" style="overflow: hidden;background: none;padding:0 0 2px;">
+          <!-- 广告位：PC端-iteye博客详情页顶部banner-960*90 -->
+          <script>
+              (function() {
+                  var s = "_" + Math.random().toString(36).slice(2);
+                  document.write('<div id="' + s + '"></div>');
+                  (window.slotbydup=window.slotbydup || []).push({
+                      id: '4773198',
+                      container: s,
+                      size: '960,60',
+                      display: 'inlay-fix'
+                  });
+              })();
+          </script><div id="_jk2q81znaml"></div><script charset="utf-8" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/dcmm_003"></script><div id="_ueig4zfpvs8"><div style="padding-right:0px;"><div id="tdqbtvkk" style="margin-left:0px;"><div style="padding-right:0px;"><iframe scrolling="no" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/s.htm" width="960" height="90" frameborder="0"></iframe><ins style="width:0px;height:0px;visibility:visible;"></ins></div></div></div></div><script type="text/javascript" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/todpduxgx.js"></script>
+        </div>
+      <div id="branding" class="clearfix">
+        <div id="blog_name">
+          <h1><a href="http://songjianyong.iteye.com/">宋建勇</a></h1>
+        </div>
+        <div id="fd"></div>
+        <div id="blog_navbar">
+          <ul>
+            <li class="blog_navbar_for"><a href="http://songjianyong.iteye.com/"><strong>博客</strong></a></li>
+            <li><a href="http://songjianyong.iteye.com/weibo">微博</a></li>
+            <li><a href="http://songjianyong.iteye.com/album">相册</a></li>
+            <li><a href="http://songjianyong.iteye.com/link">收藏</a></li>
+            <li><a href="http://songjianyong.iteye.com/blog/guest_book">留言</a></li>
+            <li><a href="http://songjianyong.iteye.com/blog/profile">关于我</a></li>
+          </ul>
+    
+          <div class="search">
+            <form action="/blog/search" method="get">
+              <input class="search_text" id="query" name="query" style="margin-left: 10px;width: 110px;" type="text">
+              <input class="submit_search" value="" type="submit">
+            </form>
+          </div> 
+          <div id="fd"></div>         
+        </div>
+      </div>
+      
+      <div id="content" class="clearfix">
+        <div id="main">
+          
+
+
+
+          
+
+
+<div class="h-entry" style="display:none">
+  <a href="http://songjianyong.iteye.com/" class="p-author" target="_blank">宋建勇</a>
+</div>
+
+
+<div class="blog_main">
+  <script type="application/ld+json">
+    {
+        "@context": "https://zhanzhang.baidu.com/contexts/cambrian.jsonld",
+        "@id": "http://songjianyong.iteye.com/blog/1961765",
+        "title": "MySQL存取大文本及二进制文件(图片)",
+        "images": [],
+        "description": "",
+        "pubDate": "2013-10-21T17:03:49"
+    }
+  </script>
+  <div class="blog_title">
+    <h3>
+      <a href="http://songjianyong.iteye.com/blog/1961765">MySQL存取大文本及二进制文件(图片)</a>
+      <em class="actions">      </em>
+    </h3>
+    <ul class="blog_categories"><strong>博客分类：</strong> <li><a href="http://songjianyong.iteye.com/category/151680">MySQL</a></li><li><a href="http://songjianyong.iteye.com/category/296252">IO</a></li> </ul>
+        <div class="news_tag"><a href="http://www.iteye.com/blogs/tag/mysql">mysql</a><a href="http://www.iteye.com/blogs/tag/jdbc">jdbc</a><a href="http://www.iteye.com/blogs/tag/clob">clob</a><a href="http://www.iteye.com/blogs/tag/blob">blob</a><a href="http://www.iteye.com/blogs/tag/%E5%9B%BE%E7%89%87">图片</a>&nbsp;</div>
+  </div>
+
+  <div id="blog_content" class="blog_content">
+    <div class="dp-highlighter" id=""><div class="bar"><div class="tools">Java代码 <embed wmode="transparent" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/clipboard_new.swf" flashvars="clipboard=package%20cn.com.songjy.test.db%3B%0A%0Aimport%20java.io.BufferedInputStream%3B%0Aimport%20java.io.BufferedOutputStream%3B%0Aimport%20java.io.BufferedReader%3B%0Aimport%20java.io.BufferedWriter%3B%0Aimport%20java.io.File%3B%0Aimport%20java.io.FileInputStream%3B%0Aimport%20java.io.FileOutputStream%3B%0Aimport%20java.io.FileReader%3B%0Aimport%20java.io.FileWriter%3B%0Aimport%20java.io.IOException%3B%0Aimport%20java.sql.Connection%3B%0Aimport%20java.sql.DriverManager%3B%0Aimport%20java.sql.PreparedStatement%3B%0Aimport%20java.sql.ResultSet%3B%0Aimport%20java.sql.SQLException%3B%0Aimport%20java.util.Properties%3B%0A%0Aimport%20org.apache.commons.logging.Log%3B%0Aimport%20org.apache.commons.logging.LogFactory%3B%0A%0Apublic%20class%20MySQLText%20%7B%0A%0A%09private%20static%20final%20Log%20log%20%3D%20LogFactory.getLog(MySQLText.class)%3B%0A%0A%09private%20static%20final%20String%20id%20%3D%20%222%22%3B%0A%0A%09private%20static%20final%20BufferedInputStream%20bufferedInputStream%20%3D%20new%20BufferedInputStream(%0A%09%09%09MySQLText.class.getClassLoader().getResourceAsStream(%0A%09%09%09%09%09%22cn%2Fcom%2Fsongjy%2Ftest%2Fdb%2Fmysql.properties%22))%3B%0A%0A%09private%20static%20final%20Properties%20props%20%3D%20new%20Properties()%3B%0A%0A%09static%20%7B%0A%09%09try%20%7B%0A%09%09%09props.load(bufferedInputStream)%3B%0A%09%09%09Class.forName(props.getProperty(%22driver%22))%3B%0A%09%09%7D%20catch%20(IOException%20e)%20%7B%0A%09%09%09log.error(e.getMessage()%2C%20e)%3B%0A%09%09%7D%20catch%20(ClassNotFoundException%20e)%20%7B%0A%09%09%09log.error(e.getMessage()%2C%20e)%3B%0A%09%09%7D%20finally%20%7B%0A%09%09%09try%20%7B%0A%09%09%09%09if%20(null%20!%3D%20bufferedInputStream)%0A%09%09%09%09%09bufferedInputStream.close()%3B%0A%09%09%09%7D%20catch%20(IOException%20e)%20%7B%0A%09%09%09%09log.error(e.getMessage()%2C%20e)%3B%0A%09%09%09%7D%0A%09%09%7D%0A%09%7D%0A%0A%09public%20Connection%20getConnection()%20throws%20SQLException%20%7B%0A%09%09log.info(props.getProperty(%22url%22))%3B%0A%09%09return%20DriverManager.getConnection(props.getProperty(%22url%22)%2C%0A%09%09%09%09props.getProperty(%22user%22)%2C%20props.getProperty(%22password%22))%3B%0A%09%7D%0A%0A%09%2F%2F%20%E4%BD%BF%E7%94%A8JDBC%E4%BF%9D%E5%AD%98%E5%A4%A7%E6%96%87%E6%9C%AC%0A%09public%20void%20save_text()%20throws%20SQLException%2C%20IOException%20%7B%0A%09%09Connection%20connection%20%3D%20null%3B%0A%09%09PreparedStatement%20preparedStatement%20%3D%20null%3B%0A%09%09BufferedReader%20bufferedReader%20%3D%20null%3B%0A%09%09try%20%7B%0A%09%09%09connection%20%3D%20getConnection()%3B%0A%0A%09%09%09preparedStatement%20%3D%20connection%0A%09%09%09%09%09.prepareStatement(%22INSERT%20INTO%20testclob(id%2Cresume)%20VALUES(%3F%2C%3F)%22)%3B%0A%0A%09%09%09preparedStatement.setString(1%2C%20id)%3B%0A%0A%09%09%09File%20txt%20%3D%20new%20File(%0A%09%09%09%09%09%22src%2Fmain%2Fjava%2Fcn%2Fcom%2Fsongjy%2Ftest%2Fdb%2FMySQLText.java%22)%3B%0A%0A%09%09%09bufferedReader%20%3D%20new%20BufferedReader(new%20FileReader(txt))%3B%0A%0A%09%09%09%2F%2F%20preparedStatement.setCharacterStream(2%2C%20reader%2C%20txt.length())%3B%0A%09%09%09preparedStatement.setCharacterStream(2%2C%20bufferedReader)%3B%0A%0A%09%09%09log.info(preparedStatement.executeUpdate()%20%3E%200%20%3F%20%22%E4%BF%9D%E5%AD%98%E6%96%87%E6%9C%AC%E6%88%90%E5%8A%9F%22%0A%09%09%09%09%09%3A%20%22%E4%BF%9D%E5%AD%98%E6%96%87%E6%9C%AC%E5%A4%B1%E8%B4%A5%22)%3B%0A%09%09%7D%20finally%20%7B%0A%09%09%09if%20(null%20!%3D%20bufferedReader)%0A%09%09%09%09bufferedReader.close()%3B%0A%09%09%09if%20(null%20!%3D%20preparedStatement)%0A%09%09%09%09preparedStatement.close()%3B%0A%09%09%09if%20(null%20!%3D%20connection)%0A%09%09%09%09connection.close()%3B%0A%09%09%7D%0A%09%7D%0A%0A%09%2F%2F%20%E4%BD%BF%E7%94%A8JDBC%E6%9F%A5%E8%AF%A2%E5%A4%A7%E6%96%87%E6%9C%AC%0A%09public%20void%20query_text()%20throws%20SQLException%2C%20IOException%20%7B%0A%09%09Connection%20connection%20%3D%20null%3B%0A%09%09PreparedStatement%20preparedStatement%20%3D%20null%3B%0A%09%09ResultSet%20resultSet%20%3D%20null%3B%0A%09%09try%20%7B%0A%09%09%09connection%20%3D%20getConnection()%3B%0A%0A%09%09%09preparedStatement%20%3D%20connection%0A%09%09%09%09%09.prepareStatement(%22SELECT%20id%2Cresume%20FROM%20testclob%20WHERE%20id%20%3D%20%3F%22)%3B%0A%0A%09%09%09preparedStatement.setString(1%2C%20id)%3B%0A%0A%09%09%09resultSet%20%3D%20preparedStatement.executeQuery()%3B%0A%0A%09%09%09while%20(true%20%3D%3D%20resultSet.next())%20%7B%0A%09%09%09%09BufferedReader%20bufferedReader%20%3D%20null%3B%0A%09%09%09%09BufferedWriter%20bufferedWriter%20%3D%20null%3B%0A%09%09%09%09try%20%7B%0A%09%09%09%09%09bufferedReader%20%3D%20new%20BufferedReader(%0A%09%09%09%09%09%09%09resultSet.getCharacterStream(%22resume%22))%3B%0A%09%09%09%09%09bufferedWriter%20%3D%20new%20BufferedWriter(%0A%09%09%09%09%09%09%09new%20FileWriter(%0A%09%09%09%09%09%09%09%09%09%22src%2Fmain%2Fjava%2Fcn%2Fcom%2Fsongjy%2Ftest%2Fdb%2FMySQLText.txt%22))%3B%0A%09%09%09%09%09char%5B%5D%20buffer%20%3D%20new%20char%5B512%5D%3B%2F%2F%20%E6%AF%8F%E6%AC%A1%E8%AF%BB%E5%8F%96512%E4%B8%AA%E5%AD%97%E7%AC%A6%0A%0A%09%09%09%09%09for%20(int%20len%20%3D%200%3B%20(len%20%3D%20bufferedReader.read(buffer))%20%3E%200%3B)%20%7B%0A%09%09%09%09%09%09bufferedWriter.write(buffer%2C%200%2C%20len)%3B%0A%09%09%09%09%09%7D%0A%09%09%09%09%7D%20finally%20%7B%0A%09%09%09%09%09if%20(null%20!%3D%20bufferedWriter)%0A%09%09%09%09%09%09bufferedWriter.close()%3B%0A%09%09%09%09%09if%20(null%20!%3D%20bufferedReader)%0A%09%09%09%09%09%09bufferedReader.close()%3B%0A%09%09%09%09%7D%0A%09%09%09%7D%0A%0A%09%09%7D%20finally%20%7B%0A%0A%09%09%09if%20(null%20!%3D%20resultSet)%0A%09%09%09%09resultSet.close()%3B%0A%0A%09%09%09if%20(null%20!%3D%20preparedStatement)%0A%09%09%09%09preparedStatement.close()%3B%0A%0A%09%09%09if%20(null%20!%3D%20connection)%0A%09%09%09%09connection.close()%3B%0A%09%09%7D%0A%09%7D%0A%0A%09%2F%2F%20JDBC%E4%BF%9D%E5%AD%98%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0%E6%8D%AE%0A%09public%20void%20save_binary_stream()%20throws%20SQLException%2C%20IOException%20%7B%0A%09%09Connection%20connection%20%3D%20null%3B%0A%09%09PreparedStatement%20preparedStatement%20%3D%20null%3B%0A%09%09BufferedInputStream%20bufferedInputStream%20%3D%20null%3B%0A%0A%09%09try%20%7B%0A%0A%09%09%09File%20jpg%20%3D%20new%20File(%0A%09%09%09%09%09%22src%2Fmain%2Fjava%2Fcn%2Fcom%2Fsongjy%2Ftest%2Fdb%2FJellyfish.jpg%22)%3B%0A%0A%09%09%09bufferedInputStream%20%3D%20new%20BufferedInputStream(new%20FileInputStream(%0A%09%09%09%09%09jpg))%3B%0A%0A%09%09%09connection%20%3D%20getConnection()%3B%0A%0A%09%09%09preparedStatement%20%3D%20connection%0A%09%09%09%09%09.prepareStatement(%22INSERT%20INTO%20testblob(id%2C%20image)%20VALUES%20(%3F%2C%3F)%22)%3B%0A%0A%09%09%09preparedStatement.setString(1%2C%20id)%3B%0A%09%09%09%2F%2F%20preparedStatement.setBinaryStream(2%2C%20inputStream%2C%20jpg.length())%3B%0A%09%09%09preparedStatement.setBinaryStream(2%2C%20bufferedInputStream)%3B%0A%0A%09%09%09log.info(preparedStatement.executeUpdate()%20%3E%200%20%3F%20%22%E5%9B%BE%E7%89%87%E4%BF%9D%E5%AD%98%E6%88%90%E5%8A%9F%22%0A%09%09%09%09%09%3A%20%22%E5%9B%BE%E7%89%87%E4%BF%9D%E5%AD%98%E5%A4%B1%E8%B4%A5%22)%3B%0A%0A%09%09%7D%20finally%20%7B%0A%09%09%09if%20(null%20!%3D%20bufferedInputStream)%0A%09%09%09%09bufferedInputStream.close()%3B%2F%2F%20%E8%AE%B0%E5%BE%97%E5%85%B3%E9%97%AD%EF%BC%8C%E5%90%A6%E5%88%99%E5%8F%AF%E8%83%BD%E5%AF%BC%E8%87%B4%E8%AF%A5%E6%96%87%E4%BB%B6%E5%8D%A0%E7%94%A8%E8%80%8C%E5%BD%B1%E5%93%8D%E5%85%B6%E5%AE%83%E6%93%8D%E7%BA%B5%EF%BC%88%E5%88%A0%E9%99%A4%E7%AD%89%EF%BC%89%2C%E5%8F%AF%E5%8F%82%E9%98%85%2F%2Fhttp%3A%2F%2Fwww.coder.xxx%2Farchives%2F32.html%0A%0A%09%09%09if%20(null%20!%3D%20preparedStatement)%0A%09%09%09%09preparedStatement.close()%3B%0A%0A%09%09%09if%20(null%20!%3D%20connection)%0A%09%09%09%09connection.close()%3B%0A%09%09%7D%0A%09%7D%0A%0A%09%2F%2F%20JDBC%E6%9F%A5%E8%AF%A2%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%95%B0%E6%8D%AE%0A%09public%20void%20query_binary_stream()%20throws%20SQLException%2C%20IOException%20%7B%0A%09%09Connection%20connection%20%3D%20null%3B%0A%09%09PreparedStatement%20preparedStatement%20%3D%20null%3B%0A%09%09ResultSet%20resultSet%20%3D%20null%3B%0A%0A%09%09try%20%7B%0A%09%09%09connection%20%3D%20getConnection()%3B%0A%09%09%09preparedStatement%20%3D%20connection%0A%09%09%09%09%09.prepareStatement(%22SELECT%20id%2C%20image%20FROM%20testblob%20WHERE%20id%20%3D%20%3F%22)%3B%0A%0A%09%09%09preparedStatement.setString(1%2C%20id)%3B%0A%0A%09%09%09resultSet%20%3D%20preparedStatement.executeQuery()%3B%0A%0A%09%09%09while%20(true%20%3D%3D%20resultSet.next())%20%7B%0A%09%09%09%09BufferedOutputStream%20bufferedOutputStream%20%3D%20null%3B%0A%09%09%09%09BufferedInputStream%20bufferedInputStream%20%3D%20null%3B%0A%09%09%09%09try%20%7B%0A%09%09%09%09%09bufferedInputStream%20%3D%20new%20BufferedInputStream(%0A%09%09%09%09%09%09%09resultSet.getBinaryStream(%22image%22))%3B%0A%0A%09%09%09%09%09bufferedOutputStream%20%3D%20new%20BufferedOutputStream(%0A%09%09%09%09%09%09%09new%20FileOutputStream(%0A%09%09%09%09%09%09%09%09%09%22src%2Fmain%2Fjava%2Fcn%2Fcom%2Fsongjy%2Ftest%2Fdb%2F1.jpg%22))%3B%0A%0A%09%09%09%09%09byte%5B%5D%20buffer%20%3D%20new%20byte%5B1024%5D%3B%2F%2F%20%E6%AF%8F%E6%AC%A1%E8%AF%BB%E5%8F%961k%0A%0A%09%09%09%09%09for%20(int%20len%20%3D%200%3B%20(len%20%3D%20bufferedInputStream.read(buffer))%20%3E%200%3B)%20%7B%0A%09%09%09%09%09%09bufferedOutputStream.write(buffer%2C%200%2C%20len)%3B%0A%09%09%09%09%09%09%2F%2F%20bufferedOutputStream.flush()%3B%2F%2F%E5%85%B3%E9%97%AD%E7%9A%84%E6%97%B6%E5%80%99%E4%BC%9A%E8%87%AA%E5%8A%A8%E5%B0%86%E7%BC%93%E5%AD%98%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E5%86%99%E5%85%A5%E6%96%87%E4%BB%B6%0A%09%09%09%09%09%7D%0A%09%09%09%09%7D%20finally%20%7B%0A%09%09%09%09%09if%20(null%20!%3D%20bufferedOutputStream)%0A%09%09%09%09%09%09bufferedOutputStream.close()%3B%0A%09%09%09%09%09if%20(null%20!%3D%20bufferedInputStream)%0A%09%09%09%09%09%09bufferedInputStream.close()%3B%0A%0A%09%09%09%09%7D%0A%09%09%09%7D%0A%0A%09%09%7D%20finally%20%7B%0A%0A%09%09%09if%20(null%20!%3D%20resultSet)%0A%09%09%09%09resultSet.close()%3B%0A%0A%09%09%09if%20(null%20!%3D%20preparedStatement)%0A%09%09%09%09preparedStatement.close()%3B%0A%0A%09%09%09if%20(null%20!%3D%20connection)%0A%09%09%09%09connection.close()%3B%0A%09%09%7D%0A%09%7D%0A%0A%09public%20static%20void%20main(String%5B%5D%20args)%20throws%20SQLException%2C%20IOException%20%7B%0A%09%09%2F%2F%20new%20MySQLText().save_text()%3B%0A%09%09%2F%2F%20new%20MySQLText().query_text()%3B%0A%09%09%2F%2F%20new%20MySQLText().save_binary_stream()%3B%0A%09%09new%20MySQLText().query_binary_stream()%3B%0A%09%7D%0A%7D%0A%0A%2F*%0A%20*%20%0A%20*%20create%20table%20testclob%0A%20*%20%0A%20*%20(%0A%20*%20%0A%20*%20id%20varchar(40)%20primary%20key%2C%0A%20*%20%0A%20*%20resume%20text%0A%20*%20%0A%20*%20)%3B%0A%20*%20%0A%20*%20create%20table%20testblob%0A%20*%20%0A%20*%20(%0A%20*%20%0A%20*%20id%20varchar(40)%20primary%20key%2C%0A%20*%20%0A%20*%20image%20MediumBlob%0A%20*%20%0A%20*%20)%3B%0A%20*%2F" quality="high" allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" width="14" height="15">&nbsp;<a href="javascript:void()" title="收藏这段代码" onclick="code_favorites_do_favorite(this);return false;"><img class="star" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/icon_star.png" alt="收藏代码"><img class="spinner" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/spinner.gif" style="display:none"></a></div></div><ol start="1" class="dp-j"><li><span><span class="keyword">package</span><span>&nbsp;cn.com.songjy.test.db;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.BufferedInputStream;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.BufferedOutputStream;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.BufferedReader;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.BufferedWriter;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.File;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.FileInputStream;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.FileOutputStream;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.FileReader;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.FileWriter;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.io.IOException;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.sql.Connection;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.sql.DriverManager;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.sql.PreparedStatement;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.sql.ResultSet;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.sql.SQLException;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;java.util.Properties;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span><span class="keyword">import</span><span>&nbsp;org.apache.commons.logging.Log;&nbsp;&nbsp;</span></span></li><li><span><span class="keyword">import</span><span>&nbsp;org.apache.commons.logging.LogFactory;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">class</span><span>&nbsp;MySQLText&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;</span><span class="keyword">final</span><span>&nbsp;Log&nbsp;log&nbsp;=&nbsp;LogFactory.getLog(MySQLText.</span><span class="keyword">class</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;</span><span class="keyword">final</span><span>&nbsp;String&nbsp;id&nbsp;=&nbsp;</span><span class="string">"2"</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;</span><span class="keyword">final</span><span>&nbsp;BufferedInputStream&nbsp;bufferedInputStream&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;BufferedInputStream(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MySQLText.<span class="keyword">class</span><span>.getClassLoader().getResourceAsStream(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"cn/com/songjy/test/db/mysql.properties"</span><span>));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">private</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;</span><span class="keyword">final</span><span>&nbsp;Properties&nbsp;props&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;Properties();&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">static</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;props.load(bufferedInputStream);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Class.forName(props.getProperty(<span class="string">"driver"</span><span>));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">catch</span><span>&nbsp;(IOException&nbsp;e)&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log.error(e.getMessage(),&nbsp;e);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">catch</span><span>&nbsp;(ClassNotFoundException&nbsp;e)&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log.error(e.getMessage(),&nbsp;e);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">finally</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;bufferedInputStream)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedInputStream.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">catch</span><span>&nbsp;(IOException&nbsp;e)&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log.error(e.getMessage(),&nbsp;e);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;Connection&nbsp;getConnection()&nbsp;</span><span class="keyword">throws</span><span>&nbsp;SQLException&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log.info(props.getProperty(<span class="string">"url"</span><span>));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">return</span><span>&nbsp;DriverManager.getConnection(props.getProperty(</span><span class="string">"url"</span><span>),&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;props.getProperty(<span class="string">"user"</span><span>),&nbsp;props.getProperty(</span><span class="string">"password"</span><span>));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;使用JDBC保存大文本</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;save_text()&nbsp;</span><span class="keyword">throws</span><span>&nbsp;SQLException,&nbsp;IOException&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Connection&nbsp;connection&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreparedStatement&nbsp;preparedStatement&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferedReader&nbsp;bufferedReader&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection&nbsp;=&nbsp;getConnection();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement&nbsp;=&nbsp;connection&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.prepareStatement(<span class="string">"INSERT&nbsp;INTO&nbsp;testclob(id,resume)&nbsp;VALUES(?,?)"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.setString(<span class="number">1</span><span>,&nbsp;id);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;File&nbsp;txt&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;File(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"src/main/java/cn/com/songjy/test/db/MySQLText.java"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedReader&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;BufferedReader(</span><span class="keyword">new</span><span>&nbsp;FileReader(txt));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;preparedStatement.setCharacterStream(2,&nbsp;reader,&nbsp;txt.length());</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.setCharacterStream(<span class="number">2</span><span>,&nbsp;bufferedReader);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log.info(preparedStatement.executeUpdate()&nbsp;&gt;&nbsp;<span class="number">0</span><span>&nbsp;?&nbsp;</span><span class="string">"保存文本成功"</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span class="string">"保存文本失败"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">finally</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;bufferedReader)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedReader.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;preparedStatement)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;connection)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;使用JDBC查询大文本</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;query_text()&nbsp;</span><span class="keyword">throws</span><span>&nbsp;SQLException,&nbsp;IOException&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Connection&nbsp;connection&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreparedStatement&nbsp;preparedStatement&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ResultSet&nbsp;resultSet&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection&nbsp;=&nbsp;getConnection();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement&nbsp;=&nbsp;connection&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.prepareStatement(<span class="string">"SELECT&nbsp;id,resume&nbsp;FROM&nbsp;testclob&nbsp;WHERE&nbsp;id&nbsp;=&nbsp;?"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.setString(<span class="number">1</span><span>,&nbsp;id);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resultSet&nbsp;=&nbsp;preparedStatement.executeQuery();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span><span>&nbsp;(</span><span class="keyword">true</span><span>&nbsp;==&nbsp;resultSet.next())&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferedReader&nbsp;bufferedReader&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferedWriter&nbsp;bufferedWriter&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedReader&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;BufferedReader(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resultSet.getCharacterStream(<span class="string">"resume"</span><span>));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedWriter&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;BufferedWriter(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">new</span><span>&nbsp;FileWriter(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"src/main/java/cn/com/songjy/test/db/MySQLText.txt"</span><span>));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">char</span><span>[]&nbsp;buffer&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;</span><span class="keyword">char</span><span>[</span><span class="number">512</span><span>];</span><span class="comment">//&nbsp;每次读取512个字符</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span><span>&nbsp;(</span><span class="keyword">int</span><span>&nbsp;len&nbsp;=&nbsp;</span><span class="number">0</span><span>;&nbsp;(len&nbsp;=&nbsp;bufferedReader.read(buffer))&nbsp;&gt;&nbsp;</span><span class="number">0</span><span>;)&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedWriter.write(buffer,&nbsp;<span class="number">0</span><span>,&nbsp;len);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">finally</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;bufferedWriter)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedWriter.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;bufferedReader)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedReader.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">finally</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;resultSet)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resultSet.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;preparedStatement)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;connection)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;JDBC保存二进制数据</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;save_binary_stream()&nbsp;</span><span class="keyword">throws</span><span>&nbsp;SQLException,&nbsp;IOException&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Connection&nbsp;connection&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreparedStatement&nbsp;preparedStatement&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferedInputStream&nbsp;bufferedInputStream&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;File&nbsp;jpg&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;File(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"src/main/java/cn/com/songjy/test/db/Jellyfish.jpg"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedInputStream&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;BufferedInputStream(</span><span class="keyword">new</span><span>&nbsp;FileInputStream(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;jpg));&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection&nbsp;=&nbsp;getConnection();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement&nbsp;=&nbsp;connection&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.prepareStatement(<span class="string">"INSERT&nbsp;INTO&nbsp;testblob(id,&nbsp;image)&nbsp;VALUES&nbsp;(?,?)"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.setString(<span class="number">1</span><span>,&nbsp;id);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;preparedStatement.setBinaryStream(2,&nbsp;inputStream,&nbsp;jpg.length());</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.setBinaryStream(<span class="number">2</span><span>,&nbsp;bufferedInputStream);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;log.info(preparedStatement.executeUpdate()&nbsp;&gt;&nbsp;<span class="number">0</span><span>&nbsp;?&nbsp;</span><span class="string">"图片保存成功"</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span class="string">"图片保存失败"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">finally</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;bufferedInputStream)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedInputStream.close();<span class="comment">//&nbsp;记得关闭，否则可能导致该文件占用而影响其它操纵（删除等）,可参阅//http://www.coder.xxx/archives/32.html</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;preparedStatement)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;connection)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;JDBC查询二进制数据</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;query_binary_stream()&nbsp;</span><span class="keyword">throws</span><span>&nbsp;SQLException,&nbsp;IOException&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Connection&nbsp;connection&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PreparedStatement&nbsp;preparedStatement&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ResultSet&nbsp;resultSet&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection&nbsp;=&nbsp;getConnection();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement&nbsp;=&nbsp;connection&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.prepareStatement(<span class="string">"SELECT&nbsp;id,&nbsp;image&nbsp;FROM&nbsp;testblob&nbsp;WHERE&nbsp;id&nbsp;=&nbsp;?"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.setString(<span class="number">1</span><span>,&nbsp;id);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resultSet&nbsp;=&nbsp;preparedStatement.executeQuery();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span><span>&nbsp;(</span><span class="keyword">true</span><span>&nbsp;==&nbsp;resultSet.next())&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferedOutputStream&nbsp;bufferedOutputStream&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BufferedInputStream&nbsp;bufferedInputStream&nbsp;=&nbsp;<span class="keyword">null</span><span>;&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">try</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedInputStream&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;BufferedInputStream(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resultSet.getBinaryStream(<span class="string">"image"</span><span>));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedOutputStream&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;BufferedOutputStream(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">new</span><span>&nbsp;FileOutputStream(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"src/main/java/cn/com/songjy/test/db/1.jpg"</span><span>));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">byte</span><span>[]&nbsp;buffer&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;</span><span class="keyword">byte</span><span>[</span><span class="number">1024</span><span>];</span><span class="comment">//&nbsp;每次读取1k</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">for</span><span>&nbsp;(</span><span class="keyword">int</span><span>&nbsp;len&nbsp;=&nbsp;</span><span class="number">0</span><span>;&nbsp;(len&nbsp;=&nbsp;bufferedInputStream.read(buffer))&nbsp;&gt;&nbsp;</span><span class="number">0</span><span>;)&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedOutputStream.write(buffer,&nbsp;<span class="number">0</span><span>,&nbsp;len);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;bufferedOutputStream.flush();//关闭的时候会自动将缓存中的数据写入文件</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">finally</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;bufferedOutputStream)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedOutputStream.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;bufferedInputStream)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bufferedInputStream.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;<span class="keyword">finally</span><span>&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;resultSet)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resultSet.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;preparedStatement)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;preparedStatement.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">if</span><span>&nbsp;(</span><span class="keyword">null</span><span>&nbsp;!=&nbsp;connection)&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connection.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">public</span><span>&nbsp;</span><span class="keyword">static</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;main(String[]&nbsp;args)&nbsp;</span><span class="keyword">throws</span><span>&nbsp;SQLException,&nbsp;IOException&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;new&nbsp;MySQLText().save_text();</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;new&nbsp;MySQLText().query_text();</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">//&nbsp;new&nbsp;MySQLText().save_binary_stream();</span><span>&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">new</span><span>&nbsp;MySQLText().query_binary_stream();&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span><span class="comment">/*</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;create&nbsp;table&nbsp;testclob</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;(</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;id&nbsp;varchar(40)&nbsp;primary&nbsp;key,</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;resume&nbsp;text</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;);</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;create&nbsp;table&nbsp;testblob</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;(</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;id&nbsp;varchar(40)&nbsp;primary&nbsp;key,</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;image&nbsp;MediumBlob</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*&nbsp;);</span>&nbsp;</span></li><li><span><span class="comment">&nbsp;*/</span><span>&nbsp;&nbsp;</span></span></li></ol></div><pre class="java" name="code" style="display: none;" codeable_id="1961765" codeable_type="Blog" source_url="http://songjianyong.iteye.com/blog/1961765" pre_index="0" title="MySQL存取大文本及二进制文件(图片)">package cn.com.songjy.test.db;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+public class MySQLText {
+
+	private static final Log log = LogFactory.getLog(MySQLText.class);
+
+	private static final String id = "2";
+
+	private static final BufferedInputStream bufferedInputStream = new BufferedInputStream(
+			MySQLText.class.getClassLoader().getResourceAsStream(
+					"cn/com/songjy/test/db/mysql.properties"));
+
+	private static final Properties props = new Properties();
+
+	static {
+		try {
+			props.load(bufferedInputStream);
+			Class.forName(props.getProperty("driver"));
+		} catch (IOException e) {
+			log.error(e.getMessage(), e);
+		} catch (ClassNotFoundException e) {
+			log.error(e.getMessage(), e);
+		} finally {
+			try {
+				if (null != bufferedInputStream)
+					bufferedInputStream.close();
+			} catch (IOException e) {
+				log.error(e.getMessage(), e);
+			}
+		}
+	}
+
+	public Connection getConnection() throws SQLException {
+		log.info(props.getProperty("url"));
+		return DriverManager.getConnection(props.getProperty("url"),
+				props.getProperty("user"), props.getProperty("password"));
+	}
+
+	// 使用JDBC保存大文本
+	public void save_text() throws SQLException, IOException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		BufferedReader bufferedReader = null;
+		try {
+			connection = getConnection();
+
+			preparedStatement = connection
+					.prepareStatement("INSERT INTO testclob(id,resume) VALUES(?,?)");
+
+			preparedStatement.setString(1, id);
+
+			File txt = new File(
+					"src/main/java/cn/com/songjy/test/db/MySQLText.java");
+
+			bufferedReader = new BufferedReader(new FileReader(txt));
+
+			// preparedStatement.setCharacterStream(2, reader, txt.length());
+			preparedStatement.setCharacterStream(2, bufferedReader);
+
+			log.info(preparedStatement.executeUpdate() &gt; 0 ? "保存文本成功"
+					: "保存文本失败");
+		} finally {
+			if (null != bufferedReader)
+				bufferedReader.close();
+			if (null != preparedStatement)
+				preparedStatement.close();
+			if (null != connection)
+				connection.close();
+		}
+	}
+
+	// 使用JDBC查询大文本
+	public void query_text() throws SQLException, IOException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			connection = getConnection();
+
+			preparedStatement = connection
+					.prepareStatement("SELECT id,resume FROM testclob WHERE id = ?");
+
+			preparedStatement.setString(1, id);
+
+			resultSet = preparedStatement.executeQuery();
+
+			while (true == resultSet.next()) {
+				BufferedReader bufferedReader = null;
+				BufferedWriter bufferedWriter = null;
+				try {
+					bufferedReader = new BufferedReader(
+							resultSet.getCharacterStream("resume"));
+					bufferedWriter = new BufferedWriter(
+							new FileWriter(
+									"src/main/java/cn/com/songjy/test/db/MySQLText.txt"));
+					char[] buffer = new char[512];// 每次读取512个字符
+
+					for (int len = 0; (len = bufferedReader.read(buffer)) &gt; 0;) {
+						bufferedWriter.write(buffer, 0, len);
+					}
+				} finally {
+					if (null != bufferedWriter)
+						bufferedWriter.close();
+					if (null != bufferedReader)
+						bufferedReader.close();
+				}
+			}
+
+		} finally {
+
+			if (null != resultSet)
+				resultSet.close();
+
+			if (null != preparedStatement)
+				preparedStatement.close();
+
+			if (null != connection)
+				connection.close();
+		}
+	}
+
+	// JDBC保存二进制数据
+	public void save_binary_stream() throws SQLException, IOException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		BufferedInputStream bufferedInputStream = null;
+
+		try {
+
+			File jpg = new File(
+					"src/main/java/cn/com/songjy/test/db/Jellyfish.jpg");
+
+			bufferedInputStream = new BufferedInputStream(new FileInputStream(
+					jpg));
+
+			connection = getConnection();
+
+			preparedStatement = connection
+					.prepareStatement("INSERT INTO testblob(id, image) VALUES (?,?)");
+
+			preparedStatement.setString(1, id);
+			// preparedStatement.setBinaryStream(2, inputStream, jpg.length());
+			preparedStatement.setBinaryStream(2, bufferedInputStream);
+
+			log.info(preparedStatement.executeUpdate() &gt; 0 ? "图片保存成功"
+					: "图片保存失败");
+
+		} finally {
+			if (null != bufferedInputStream)
+				bufferedInputStream.close();// 记得关闭，否则可能导致该文件占用而影响其它操纵（删除等）,可参阅//http://www.coder.xxx/archives/32.html
+
+			if (null != preparedStatement)
+				preparedStatement.close();
+
+			if (null != connection)
+				connection.close();
+		}
+	}
+
+	// JDBC查询二进制数据
+	public void query_binary_stream() throws SQLException, IOException {
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+
+		try {
+			connection = getConnection();
+			preparedStatement = connection
+					.prepareStatement("SELECT id, image FROM testblob WHERE id = ?");
+
+			preparedStatement.setString(1, id);
+
+			resultSet = preparedStatement.executeQuery();
+
+			while (true == resultSet.next()) {
+				BufferedOutputStream bufferedOutputStream = null;
+				BufferedInputStream bufferedInputStream = null;
+				try {
+					bufferedInputStream = new BufferedInputStream(
+							resultSet.getBinaryStream("image"));
+
+					bufferedOutputStream = new BufferedOutputStream(
+							new FileOutputStream(
+									"src/main/java/cn/com/songjy/test/db/1.jpg"));
+
+					byte[] buffer = new byte[1024];// 每次读取1k
+
+					for (int len = 0; (len = bufferedInputStream.read(buffer)) &gt; 0;) {
+						bufferedOutputStream.write(buffer, 0, len);
+						// bufferedOutputStream.flush();//关闭的时候会自动将缓存中的数据写入文件
+					}
+				} finally {
+					if (null != bufferedOutputStream)
+						bufferedOutputStream.close();
+					if (null != bufferedInputStream)
+						bufferedInputStream.close();
+
+				}
+			}
+
+		} finally {
+
+			if (null != resultSet)
+				resultSet.close();
+
+			if (null != preparedStatement)
+				preparedStatement.close();
+
+			if (null != connection)
+				connection.close();
+		}
+	}
+
+	public static void main(String[] args) throws SQLException, IOException {
+		// new MySQLText().save_text();
+		// new MySQLText().query_text();
+		// new MySQLText().save_binary_stream();
+		new MySQLText().query_binary_stream();
+	}
+}
+
+/*
+ * 
+ * create table testclob
+ * 
+ * (
+ * 
+ * id varchar(40) primary key,
+ * 
+ * resume text
+ * 
+ * );
+ * 
+ * create table testblob
+ * 
+ * (
+ * 
+ * id varchar(40) primary key,
+ * 
+ * image MediumBlob
+ * 
+ * );
+ */</pre>
+<br>
+<br>备注：保存二进制文件时注意选择类型，详见<a target="_blank" href="http://www.jb51.net/article/29686.htm">mysql blob大小配置介绍</a>
+<br>
+<br><img src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/6913dc02-e1c4-3a48-83ef-c76ed85f552d.png">
+<br>
+<br><a target="_blank" href="http://songjianyong.iteye.com/blog/812961">oracle存取二进制文件（图片）</a>
+<br>
+<br><a target="_blank" href="http://even2012.iteye.com/blog/1886950">JDBC 学习笔记（二）—— 大数据+存储过程+批处理+事务管理</a>
+<br>
+<br>可能会遇到的问题：<a target="_blank" href="http://songjianyong.iteye.com/blog/1961770">com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException</a>
+<br>
+<br><a target="_blank" href="http://nnwq.iteye.com/blog/1970460">Java读文件的一些归纳总结</a>
+<br>
+<br><a target="_blank" href="http://www.coder.xxx/archives/32.html">InputStream未关闭导致文件被占用从而引发的问题</a>
+<br>
+<br><a target="_blank" href="http://wenku.baidu.com/link?url=k0MmHZnjG35CLufi-A76us2Zpq5UVS7lChx6md9Ov1g04L_M4gc9-NJwu6ArcF7w31M012RA9aibqg9IQdWGB1hawwNWqg0TwkO1pYLORM7">BufferedInputStream与BufferedOutputStream的使用</a>
+<br><div class="dp-highlighter" id=""><div class="bar"><div class="tools">Java代码 <embed wmode="transparent" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/clipboard_new.swf" flashvars="clipboard=%09public%20void%20resource()%20throws%20IOException%20%7B%0A%0A%09%09Resource%20resource%20%3D%20new%20UrlResource(%0A%09%09%09%09%22http%3A%2F%2F127.0.0.1%3A8008%2Fmonitor%2Ffile%2Fnavicat8_mysql_cs.exe%22)%3B%0A%0A%09%09System.out.println(resource.getFilename())%3B%0A%0A%09%09File%20f%20%3D%20new%20File(resource.getFilename())%3B%0A%0A%09%09System.out.println(f.length())%3B%0A%0A%09%09InputStream%20src_in%20%3D%20resource.getInputStream()%3B%0A%0A%09%09BufferedInputStream%20in%20%3D%20new%20BufferedInputStream(src_in)%3B%0A%0A%09%09byte%5B%5D%20temp%20%3D%20new%20byte%5B1024%5D%3B%0A%0A%09%09BufferedOutputStream%20out%20%3D%20new%20BufferedOutputStream(%0A%09%09%09%09new%20FileOutputStream(f))%3B%0A%0A%09%09while%20(-1%20!%3D%20(in.read(temp)))%20%7B%0A%09%09%09out.write(temp)%3B%0A%09%09%7D%0A%0A%09%09out.flush()%3B%0A%0A%09%09out.close()%3B%0A%09%09in.close()%3B%0A%09%09src_in.close()%3B%0A%0A%09%09System.out.println(f.length())%3B%0A%09%7D" quality="high" allowscriptaccess="always" type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/go/getflashplayer" width="14" height="15">&nbsp;<a href="javascript:void()" title="收藏这段代码" onclick="code_favorites_do_favorite(this);return false;"><img class="star" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/icon_star.png" alt="收藏代码"><img class="spinner" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/spinner.gif" style="display:none"></a></div></div><ol start="1" class="dp-j"><li><span><span class="keyword">public</span><span>&nbsp;</span><span class="keyword">void</span><span>&nbsp;resource()&nbsp;</span><span class="keyword">throws</span><span>&nbsp;IOException&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;Resource&nbsp;resource&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;UrlResource(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="string">"http://127.0.0.1:8008/monitor/file/navicat8_mysql_cs.exe"</span><span>);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(resource.getFilename());&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;File&nbsp;f&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;File(resource.getFilename());&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(f.length());&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;InputStream&nbsp;src_in&nbsp;=&nbsp;resource.getInputStream();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;BufferedInputStream&nbsp;in&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;BufferedInputStream(src_in);&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">byte</span><span>[]&nbsp;temp&nbsp;=&nbsp;</span><span class="keyword">new</span><span>&nbsp;</span><span class="keyword">byte</span><span>[</span><span class="number">1024</span><span>];&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;BufferedOutputStream&nbsp;out&nbsp;=&nbsp;<span class="keyword">new</span><span>&nbsp;BufferedOutputStream(&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">new</span><span>&nbsp;FileOutputStream(f));&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">while</span><span>&nbsp;(-</span><span class="number">1</span><span>&nbsp;!=&nbsp;(in.read(temp)))&nbsp;{&nbsp;&nbsp;</span></span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;out.write(temp);&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;out.flush();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;out.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;in.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;src_in.close();&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;</span></li><li><span>&nbsp;&nbsp;&nbsp;&nbsp;System.out.println(f.length());&nbsp;&nbsp;</span></li><li><span>}&nbsp;&nbsp;</span></li></ol></div><pre class="java" name="code" style="display: none;" codeable_id="1961765" codeable_type="Blog" source_url="http://songjianyong.iteye.com/blog/1961765" pre_index="1" title="MySQL存取大文本及二进制文件(图片)">	public void resource() throws IOException {
+
+		Resource resource = new UrlResource(
+				"http://127.0.0.1:8008/monitor/file/navicat8_mysql_cs.exe");
+
+		System.out.println(resource.getFilename());
+
+		File f = new File(resource.getFilename());
+
+		System.out.println(f.length());
+
+		InputStream src_in = resource.getInputStream();
+
+		BufferedInputStream in = new BufferedInputStream(src_in);
+
+		byte[] temp = new byte[1024];
+
+		BufferedOutputStream out = new BufferedOutputStream(
+				new FileOutputStream(f));
+
+		while (-1 != (in.read(temp))) {
+			out.write(temp);
+		}
+
+		out.flush();
+
+		out.close();
+		in.close();
+		src_in.close();
+
+		System.out.println(f.length());
+	}</pre>
+  </div>
+
+  
+  <div class="attachments">
+    
+      
+        <ul style="display:none;">
+          <li><a href="http://dl2.iteye.com/upload/attachment/0090/3757/6913dc02-e1c4-3a48-83ef-c76ed85f552d.png" target="_blank"><img src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/6913dc02-e1c4-3a48-83ef-c76ed85f552d-thumb.png" class="magplus" title="点击查看原始大小图片"></a></li>
+          
+          <li>大小: 15.1 KB</li>
+        </ul>
+      
+    
+      
+        <ul>
+          <li><a href="http://dl.iteye.com/topics/download/84d85ae9-28a2-3349-87fd-1d16d381d423">BufferedInputStream与BufferedOutputStream的使用.zip</a> (8 KB)</li>
+          
+          <li>下载次数: 3</li>
+        </ul>
+      
+    
+    
+      <ul>
+        <li><a href="#" onclick="$$('div.attachments ul').invoke('show');$(this).up(1).hide();return false;">查看图片附件</a></li>
+      </ul>
+    
+  </div>
+
+
+  <div>
+    <!-- 广告位：PC端-iteye博客详情页底部banner2-728*90 -->
+    <script>
+        (function() {
+            var s = "_" + Math.random().toString(36).slice(2);
+            document.write('<div id="' + s + '"></div>');
+            (window.slotbydup=window.slotbydup || []).push({
+                id: '4774193',
+                container: s,
+                size: '728,90',
+                display: 'inlay-fix'
+            });
+        })();
+    </script><div id="_qgij3ykr2kd"></div><script charset="utf-8" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/dcmm_002"></script><div id="_5mde0rvm9w8"><iframe scrolling="no" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/s_002.htm" width="728" height="90" frameborder="0"></iframe></div><script type="text/javascript" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/togxxxgpu.js"></script>
+  </div>
+
+
+
+  <div id="bottoms" class="clearfix">
+    
+    <div id="share_weibo">分享到：
+      <a data-type="sina" href="javascript:;" title="分享到新浪微博"><img src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/sina.jpg"></a>
+      <a data-type="qq" href="javascript:;" title="分享到腾讯微博"><img src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/tec.jpg"></a>
+    </div>
+  </div>
+
+  <div class="blog_nav">
+    <div class="pre_next">
+      <a href="http://songjianyong.iteye.com/blog/1970689" class="next" title="单例模式">单例模式</a>
+      |
+      <a href="http://songjianyong.iteye.com/blog/1961770" class="pre" title="com.mysql.jdbc.exceptions.jdbc4.MySQLSyntaxErrorException">com.mysql.jdbc.exceptions.jdbc4.MySQLSyn ...</a>
+    </div>
+  </div>
+  <div class="blog_bottom">
+    <ul>
+      <li>2013-10-21 17:03</li>
+      <li>浏览 8786</li>
+      <li><a href="#comments">评论(0)</a></li>
+      
+      
+      <li>分类:<a href="http://www.iteye.com/blogs/category/database">数据库</a></li>      
+      <li class="last"><a href="http://www.iteye.com/wiki/blog/1961765" target="_blank" class="more">查看更多</a></li>
+    </ul>    
+  </div>
+    
+  <div class="blog_comment">
+    <h5>评论</h5>
+    <a id="comments" name="comments"></a>
+    
+    
+    
+  </div>
+
+  <div class="blog_comment">
+    <h5>发表评论</h5>
+            <p style="text-align:center; margin-top:30px;margin-bottom:0px;"><a href="http://songjianyong.iteye.com/login" style="background-color:white;"> <img src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/login_icon.png" style="vertical-align:middle; margin-right: 10px;"></a><a href="http://songjianyong.iteye.com/login">  您还没有登录,请您登录后再发表评论 </a></p>
+      </div>
+
+  
+      
+<div class="boutique-curr-box blog_comment">
+	  <div class="boutique-curr clearfix" id="album_detail_wrap">
+	    <h5 class="h3titles">相关资源推荐</h5>
+			<ul style="margin-top: 15px" class="clearfix">
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/wenguangliang307/article/details/72911354" target="_blank" title="java servlet 读写mysql中存储的二进制文件">java servlet 读写mysql中存储的二进制文件</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://download.csdn.net/download/jf3612797/1580621" target="_blank" title="Java存取数据库中的图片（二进制文件）.HTML">Java存取数据库中的图片（二进制文件）.HTML</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/u012760183/article/details/51997987" target="_blank" title="MySql 保存大文件">MySql 保存大文件</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/weixin_40215136/article/details/78050691" target="_blank" title="Javaweb 向Mysql数据库存取二进制文件">Javaweb 向Mysql数据库存取二进制文件</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/ml_1019/article/details/77371781" target="_blank" title="使用pymsql存取图片">使用pymsql存取图片</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/liang100k/article/details/46893123" target="_blank" title="mysql中二进制形式保存文件数据">mysql中二进制形式保存文件数据</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/tanbinhbut/article/details/8659324" target="_blank" title="Hibernate将文件二进制存入mysql">Hibernate将文件二进制存入mysql</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/wangyanming123/article/details/52493602" target="_blank" title="MySQL中大文本或大文件的存取">MySQL中大文本或大文件的存取</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/zhoxier/article/details/7461065" target="_blank" title="visual c++将图片以二进制流的形式存入到mysql中">visual c++将图片以二进制流的形式存入到mysql中</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/a468903507/article/details/9170227" target="_blank" title="redis二进制文件存储">redis二进制文件存储</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/dsp_daiyujie/article/details/47378157" target="_blank" title="操作大文本数据存储在数据库中  mysql中有个lob">操作大文本数据存储在数据库中  mysql中有个lob</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/woty123/article/details/7366074" target="_blank" title="二进制文件保存到mysql数据库详解">二进制文件保存到mysql数据库详解</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/wakice/article/details/55505486" target="_blank" title="如何利用php+mysql保存和输出文件【转换成二进制】">如何利用php+mysql保存和输出文件【转换成二进制】</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/strivenoend/article/details/80462044" target="_blank" title="mysql数据库中怎么存储大段文字呢？(1000个中文字符以上）">mysql数据库中怎么存储大段文字呢？(1000个中文字符以上）</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/jjkang_/article/details/54898200" target="_blank" title="jdbc往mysql读取大文本文件">jdbc往mysql读取大文本文件</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/u014738387/article/details/50099161" target="_blank" title="mysql  存储长文本">mysql  存储长文本</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/wenxingchen/article/details/78013421" target="_blank" title="向mysql数据库中插入大文本">向mysql数据库中插入大文本</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/csdndataid_123/article/details/49805037" target="_blank" title="mysql数据表存储图片等二进制文件">mysql数据表存储图片等二进制文件</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/qq_37759895/article/details/79696881" target="_blank" title="JAVAWEB图片存入数据库的图片的转码与译码">JAVAWEB图片存入数据库的图片的转码与译码</a>
+						</li>
+				
+						<li style="width: 50%;float: left;margin: 0;line-height: 25px;overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+							<a href="https://blog.csdn.net/sholck222/article/details/74188122" target="_blank" title="python下对数据库的操作（2） 图片的存取">python下对数据库的操作（2） 图片的存取</a>
+						</li>
+				
+			</ul>
+	  </div>
+</div>
+
+    
+
+</div>
+
+
+<script type="text/javascript">
+  dp.SyntaxHighlighter.HighlightAll('code', true, true);
+
+  $$('#main .blog_content pre[name=code]').each(function(pre, index){ // blog content
+    var post_id = 1961765;
+    var location = window.location;
+    source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+    pre.writeAttribute('codeable_id', post_id);
+    pre.writeAttribute('codeable_type', "Blog");
+    pre.writeAttribute('source_url', source_url);
+    pre.writeAttribute('pre_index', index);
+    pre.writeAttribute('title', 'MySQL存取大文本及二进制文件(图片)');
+  });
+
+  fix_image_size($$('div.blog_content img'), 700);
+
+  function processComment() {
+    $$('#main .blog_comment > div').each(function(comment){// comment
+      var post_id = comment.id.substr(2);
+      $$("#"+comment.id+" pre[name=code]").each(function(pre, index){
+        var location = window.location;
+        source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+        source_url += "#" + comment.id;
+        pre.writeAttribute('codeable_id', post_id);
+        pre.writeAttribute('codeable_type', "BlogComment");
+        pre.writeAttribute('source_url', source_url);
+        pre.writeAttribute('pre_index', index);
+        pre.writeAttribute('title', 'MySQL存取大文本及二进制文件(图片)');
+      });
+    });
+  }
+
+  function quote_comment(id) {
+    new Ajax.Request('/editor/quote', {
+      parameters: {'id':id, 'type':'BlogComment'},
+      onSuccess:function(response){editor.bbcode_editor.textarea.insertAfterSelection(response.responseText);
+        Element.scrollTo(editor.bbcode_editor.textarea.element);}
+    });
+  }
+
+  code_favorites_init();
+  processComment();
+  new WeiboShare({share_buttons: $('share_weibo'), img_scope: $('blog_content')});
+</script>
+
+
+
+
+        </div>
+
+        <div id="local">
+          <div class="local_top"></div>
+          <div id="blog_owner">
+  <div id="blog_owner_logo"><a href="http://songjianyong.iteye.com/"><img alt="宋建勇的博客" class="logo" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/88c6394f-adbb-3fe0-8efd-6958e59a5435.jpg" title="宋建勇的博客: 宋建勇" width=""></a></div>
+  <div id="blog_owner_name">宋建勇</div>
+</div>
+
+          <div id="blog_actions">
+            <ul>
+              <li>浏览: 994929 次</li>
+              <li>性别: <img alt="Icon_minigender_1" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/icon_minigender_1.gif" title="男"></li>
+              <li>来自: 江西</li>
+              <li><img src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/offline.gif"></li>
+              
+            </ul>
+          </div>
+          <div id="user_visits" class="clearfix">
+            <h5>最近访客 <span style="font-weight:normal;font-size:12px;padding-left:30px;"><a href="http://songjianyong.iteye.com/blog/user_visits">更多访客&gt;&gt;</a></span></h5>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://wanghxing123.iteye.com/" target="_blank"><img alt="wanghxing123的博客" class="logo" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/user-logo-thumb.gif" title="wanghxing123的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://wanghxing123.iteye.com/" target="_blank" title="wanghxing123">wanghxing123</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://luochonglie.iteye.com/" target="_blank"><img alt="luochonglie的博客" class="logo" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/user-logo-thumb.gif" title="luochonglie的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://luochonglie.iteye.com/" target="_blank" title="luochonglie">luochonglie</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://1131288540.iteye.com/" target="_blank"><img alt="快了的男孩的博客" class="logo" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/acdefdc5-0844-3d95-b944-e3eb180fe741-thumb.jpg" title="快了的男孩的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://1131288540.iteye.com/" target="_blank" title="快了的男孩">快了的男孩</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://bongbongmong.iteye.com/" target="_blank"><img alt="bongbongmong的博客" class="logo" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/user-logo-thumb.gif" title="bongbongmong的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://bongbongmong.iteye.com/" target="_blank" title="bongbongmong">bongbongmong</a></div>
+              </div>
+            
+          </div>
+
+          
+
+                      <div id="blog_menu">
+              <h5>文章分类</h5>
+              <ul>
+                <li><a href="http://songjianyong.iteye.com/">全部博客 (284)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/151677">oracle (30)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/151678">Java (73)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/151680">MySQL (16)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/151681">Myeclipse/eclipse (12)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/151682">javascript (15)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/152044">JSP/Servlet (7)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/202710">maven (14)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/203999">AJAX (2)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/204000">JQuery (9)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/204596">tomcat (8)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/212466">spring (21)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/213026">Linux (28)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/215398">PHP (9)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/218405">UI (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/225390">编程错误及处理 (38)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/289119">多线程 (18)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/225404">hibernate (10)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/226576">Web Service (3)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/247015">struts2 (6)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/255358">log4j (3)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/267754">SVN (4)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/276250">DWR (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/276420">lucene (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/290053">正则表达式 (4)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/290063">jstl (2)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/292137">SSL (3)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/292277">POI (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/292454">网络编程 (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/292298">算法 (2)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/292300">xml (4)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/293258">加密解密 (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/296252">IO (7)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/296883">jetty (2)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/298280">存储过程 (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/308251">SQL Server (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/309377">MongoDB (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/315837">mybatis (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/320486">ETL (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/332808">Zookeeper (1)</a></li>
+                
+                  <li><a href="http://songjianyong.iteye.com/category/334660">Hadoop (5)</a></li>
+                
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>社区版块</h5>
+              <ul>
+                <li><a href="http://songjianyong.iteye.com/blog/news">我的资讯</a> (0)</li>
+                <li>
+                  <a href="http://songjianyong.iteye.com/blog/post">我的论坛</a> (7)
+                </li>
+                <li><a href="http://songjianyong.iteye.com/blog/answered_problems">我的问答</a> (3)</li>
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>存档分类</h5>
+              <ul>
+                
+                  <li><a href="http://songjianyong.iteye.com/blog/monthblog/2017-05">2017-05</a> (1)</li>
+                
+                  <li><a href="http://songjianyong.iteye.com/blog/monthblog/2016-07">2016-07</a> (4)</li>
+                
+                  <li><a href="http://songjianyong.iteye.com/blog/monthblog/2016-04">2016-04</a> (2)</li>
+                
+                <li><a href="http://songjianyong.iteye.com/blog/monthblog_more">更多存档...</a></li>
+              </ul>
+            </div>
+            
+            
+
+            <div id="guest_books">
+              <h5>最新评论</h5>
+              <ul>
+                
+                <li>
+                  <a href="http://2621482946-qq-com.iteye.com/" target="_blank" title="ron.luo">ron.luo</a>： 
+                  牛逼，正解！<br>
+                  <a href="http://songjianyong.iteye.com/blog/1910143#bc2402552">maven设定项目编码</a>
+                </li>
+                
+                <li>
+                  <a href="http://lichaoqun.iteye.com/" target="_blank" title="lichaoqun">lichaoqun</a>：
+ 
+                  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                  <a href="http://songjianyong.iteye.com/blog/2181667#bc2390471">java.sql.SQLException: Can't call commit when autocommit=true</a>
+                </li>
+                
+                <li>
+                  <a href="http://xujian0000abcd.iteye.com/" target="_blank" title="Xujian0000abcd">Xujian0000abcd</a>： 
+                  Thanks...<br>
+                  <a href="http://songjianyong.iteye.com/blog/1659652#bc2381283">Cannot proxy target class because CGLIB2 is not available. Add CGLIB to the clas</a>
+                </li>
+                
+                <li>
+                  <a href="http://renyuan2ni.iteye.com/" target="_blank" title="renyuan2ni">renyuan2ni</a>： 
+                  [i][b][u]引用[list]
+[*][img][flas ...<br>
+                  <a href="http://songjianyong.iteye.com/blog/2072930#bc2373763">Manual close is not allowed over a Spring managed SqlSession</a>
+                </li>
+                
+                <li>
+                  <a href="http://851228082.iteye.com/" target="_blank" title="851228082">851228082</a>： 
+                  宋建勇 写道851228082 写道&lt;!-- 文件拷贝时 ...<br>
+                  <a href="http://songjianyong.iteye.com/blog/1910143#bc2372897">maven设定项目编码</a>
+                </li>
+                
+              </ul>
+            </div>
+
+            <div class="local_bottom"></div>
+          
+        </div>
+
+        <div id="nav_show_top_stop" style="height: 500px;z-index:1000;margin-top: 10px;float: left;clear: left;">
+          <div>
+            <!-- 广告位：PC端-iteye博客详情页左侧Button1-200*200 -->
+            <script>
+                (function() {
+                    var s = "_" + Math.random().toString(36).slice(2);
+                    document.write('<div id="' + s + '"></div>');
+                    (window.slotbydup=window.slotbydup || []).push({
+                        id: '4773203',
+                        container: s,
+                        size: '200,200',
+                        display: 'inlay-fix'
+                    });
+                })();
+            </script><div id="_30elkke413"></div><script charset="utf-8" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/dcmm_004"></script><div style="width: 100%;"><iframe scrolling="no" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/s_003.htm" width="200" height="200" frameborder="0"></iframe></div><script type="text/javascript" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/sncoctctc.js"></script>
+          </div>
+          <div>
+            <!-- 广告位：PC端-iteye博客详情页左侧Button2-200*200 -->
+            <script>
+                (function() {
+                    var s = "_" + Math.random().toString(36).slice(2);
+                    document.write('<div id="' + s + '"></div>');
+                    (window.slotbydup=window.slotbydup || []).push({
+                        id: '4773205',
+                        container: s,
+                        size: '200,200',
+                        display: 'inlay-fix'
+                    });
+                })();
+            </script><div id="_s73fz16cb2f"></div><script charset="utf-8" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/dcmm_005"></script><div id="_utbaj7n3knf" style="width: 100%;"><div id="milacwh"><div style="padding-bottom:0px;"><iframe scrolling="no" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/s_004.htm" width="200" height="200" frameborder="0"></iframe><abbr style="display:none;"></abbr></div></div></div><script type="text/javascript" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/dyqegnhxu.js"></script>
+          </div>
+        </div>
+        <script>
+
+            setTimeout(function () {
+                var naviga_offsetTop = 0;
+
+                function onload_function() {
+                    naviga_offsetTop = jQuery("#nav_show_top_stop").position().top;
+                    jQuery(window).bind("scroll", naviga_stay_top);
+                    jQuery(window).bind("mousewheel", naviga_stay_top);
+                    jQuery(document).bind("scroll", naviga_stay_top);
+                    jQuery(document).bind("mousewheel", naviga_stay_top);
+                }
+                function naviga_stay_top() {
+
+                    var scrollTop = jQuery(document).scrollTop();
+                    if (scrollTop > (naviga_offsetTop+250)) {
+                        jQuery("#nav_show_top_stop").css({ "position": "fixed" });
+                        jQuery("#nav_show_top_stop").css({ "top": "0px" });
+                    } else {
+                        jQuery("#nav_show_top_stop").css({ "position": "fixed" });
+                        jQuery("#nav_show_top_stop").css({ "top": naviga_offsetTop+250 - scrollTop + "px" }); }
+                }
+                jQuery(document).ready(onload_function());
+            }, 200);
+
+        </script>
+      </div>
+            <script>
+          setTimeout(function () {
+              not_loading = true;
+              pageNum = 3;
+              oList = jQuery("#album_detail_wrap");
+              jQuery(window).scroll(function() {
+                  var scrollTop = jQuery(this).scrollTop();
+                  var scrollHeight = jQuery(document).height() ;
+                  var windowHeight = jQuery(this).height();
+                  if (scrollTop + windowHeight >= scrollHeight) {
+                      if(not_loading){
+                          refreshMore();
+                          setTimeout(function(){
+                              getMore();
+                          },100);
+                      }else{
+                          jQuery(".dl_more").remove();
+                      }
+                  }
+              });
+
+              function getMore(){
+                  not_loading = false;
+                  console.log("getMore......");
+                  jQuery.ajax({
+                      type: 'get',
+                      url: "/blog/ajax_get_blog_recommends/1961765",
+                      data:{
+                          page:pageNum
+                      },
+                      //async: false,
+                      dataType: 'json',
+                      success: function (resobj) {
+                          var totalNum = resobj.total_pages;
+                          if(pageNum <= totalNum && resobj.oHtml != '' ){
+                              jQuery(".dl_more").remove();
+                              oList.find('ul').append(resobj.oHtml);
+                              refreshMore();
+                              not_loading = true;
+                              pageNum++;
+                          }else{
+                              not_loading = false;
+                              noMore();
+                          }
+                      },
+                      error: function (err) {
+                          console.log(err);
+                      }
+                  });
+              }
+
+              function noMore(){
+                  jQuery(".dl_more").remove();
+                  if(oList.find(".dl_no_more").length ==0){
+                      oList.append('<div class="dl_no_more" style="font-size:14px; color:red; text-align:center;padding-top:10px; ">我们是很有底线的</div>');
+                  }
+              }
+
+              function refreshMore(){
+                  if(oList.find(".dl_more").length ==0){
+                      oList.append('<div class="dl_more" style="font-size:14px; color:red; text-align:center;padding-top:10px;">上滑加载更多</div>');
+                  }
+              }
+          }, 200);
+      </script>
+  
+      <div id="footer" class="clearfix">
+        <div id="copyright">
+          <hr>
+          声明：ITeye文章版权属于作者，受法律保护。没有作者书面许可不得转载。若作者同意转载，必须以超链接形式标明文章原始出处和作者。<br>
+          © 2003-2018 ITeye.com.   All rights reserved.  [ 京ICP证110151号  京公网安备110105010620 ]
+        </div>
+        <div id="ad_pop">
+          <div class="J_adv" data-view="true" data-mod="ad_popu_64" data-mtp="62" data-order="21" data-con="ad_content_2070">
+            <script id="popuLayer_js_q" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/popuLayer.js" defer="defer" type="text/javascript"></script>
+            <div id="layerd" style="position: fixed; bottom: 0px; right: 0px; line-height: 0px; z-index: 1000; width: 300px; height: 278px;">
+              <div onclick="jQuery('#ad_abc').hide();jQuery('.J_close').hide();" class="J_close layer_close" style="display: none; background-color: rgb(239, 239, 239); padding: 0px; color: rgb(51, 51, 51); font: 12px/24px Helvetica, Tahoma, Arial, sans-serif; text-align: right;">
+                关闭
+              </div>
+              <div id="ad_abc" style="display: none;">
+                <!-- 广告位：PC端-iteye博客详情右侧弹窗-300*250 -->
+                <script>
+                    (function() {
+                        var s = "_" + Math.random().toString(36).slice(2);
+                        document.write('<div id="' + s + '"></div>');
+                        (window.slotbydup=window.slotbydup || []).push({
+                            id: '4756560',
+                            container: s,
+                            size: '300,250',
+                            display: 'inlay-fix'
+                        });
+                    })();
+                </script><div id="_2up7sco1qlf"></div><script charset="utf-8" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/dcmm"></script><div id="_0074n9kmvw2r3" style="width: 100%;"><iframe scrolling="no" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/s_005.htm" width="300" height="250" frameborder="0"></iframe><span class="yarzwitugjpeigb" style="width:0px;height:0px;padding:0px;"></span></div><script type="text/javascript" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/avnebexun.js"></script>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <script type="text/javascript">
+  document.write("<img src='http://stat.iteye.com/?url="+ encodeURIComponent(document.location.href) + "&referrer=" + encodeURIComponent(document.referrer) + "&user_id=' width='0' height='0' />");
+</script><img src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/a.gif" width="0" height="0">
+
+
+
+    
+    
+    <script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/jquery-1.js" type="text/javascript"></script>
+<script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/tracking-1.js" type="text/javascript"></script>
+<script language="javascript" type="text/javascript" src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/async-1.js"></script>
+<script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/tracking-1_002.js" type="text/javascript"></script>
+<script type="text/javascript">var $csdn_iteye_jq = jQuery.noConflict();// 解决jq与prototype.js命名空间冲突的问题</script>
+    
+	    
+	    <script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/web-storage-cache.js" type="text/javascript"></script>
+	    <script src="MySQL%E5%AD%98%E5%8F%96%E5%A4%A7%E6%96%87%E6%9C%AC%E5%8F%8A%E4%BA%8C%E8%BF%9B%E5%88%B6%E6%96%87%E4%BB%B6(%E5%9B%BE%E7%89%87)%20-%20%E5%AE%8B%E5%BB%BA%E5%8B%87%20-%20ITeye%E5%8D%9A%E5%AE%A2_files/replace.js" type="text/javascript"></script>
+    
+    
+  
+
+</body></html>

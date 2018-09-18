@@ -1,0 +1,5 @@
+怎样使用命令备份和恢复mysql数据库
+1.备份
+	mysqldump -u root -p密码 数据库 > data.bak
+2.恢复	
+	mysql -u 用户名 -p密码 数据库名 <data.bak

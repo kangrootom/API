@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<!-- saved from url=(0070)https://www.cnblogs.com/peipei-java-bi/archive/2013/09/30/3346946.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="origin">
+<title>Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园</title>
+<meta property="og:description" content="在很多情况下，我们使用Hibernate在已经建立好数据库的基础上。在oracle中，假如已经建立好的数据库中使用了sequence,则可以按照下面的步骤把它引入到Hibernate中：?? ?? 1">
+<link type="text/css" rel="stylesheet" href="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/bundle-Minyx2_Lite.css">
+<link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/bundle-Minyx2_Lite-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/peipei-java-bi/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/peipei-java-bi/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/peipei-java-bi/wlwmanifest.xml">
+<script async="" src="https://www.google-analytics.com/analytics.js"></script><script src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/jquery-2.2.0.min.js"></script>
+<script type="text/javascript">var currentBlogApp = 'peipei-java-bi', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/blog-common.js" type="text/javascript"></script>
+<script src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/bundle-Minyx2_Lite.js" language="javascript" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+
+<div id="container">
+    <a class="minyx" href="http://www.cnblogs.com/">代码改变世界</a>
+    <ul id="topMnu">
+        <!-- 统计数据 -->
+        <li>
+            
+                <div id="blog_stats">
+Posts - 8, 
+Articles - 0, 
+Comments - 0
+<!----></div>
+            
+        </li>
+        <!-- 这边可以增加一些链接 -->
+        <!-- 博客园 -->
+        <li><a href="http://www.cnblogs.com/">Cnblogs</a></li>
+        <!-- 管理 -->
+        <li id="topMnu-dashboard">
+            <a id="lnkDashboard" href="https://www.cnblogs.com/peipei-java-bi/admin/EditPosts.aspx">Dashboard</a></li>
+        <li>
+            <a id="lnkLogin" href="http://passport.cnblogs.com/login.aspx?ReturnUrl=http://www.cnblogs.com/peipei-java-bi/archive/2013/09/30/3346946.html">Login</a></li>
+    </ul>
+
+    <script type="text/javascript">
+        var m = window.__blog.topMenuRendered;
+        if (m) { m(__$("topMnu")); }
+    </script>
+
+    <div id="header">
+        <ul id="menu">
+            <!-- 首页，当前section加上current类 -->
+            <li id="menu-home" class="current">
+                <a id="lnkHome" href="https://www.cnblogs.com/peipei-java-bi/">Home</a></li>
+            <!-- 联系 -->
+            <li id="menu-contact">
+                <a id="lnkContact" href="http://space.cnblogs.com/msg/send/%e5%9f%b9%e5%9f%b9%40java">Contact</a></li>
+            <!-- 相册 -->
+            <li id="menu-gallary">
+                <a id="lnkGallery" href="https://www.cnblogs.com/peipei-java-bi/gallery.html">Gallery</a></li>
+            <!-- Rss订阅 -->
+            <li id="rss">
+                <a id="lnkRss" href="https://www.cnblogs.com/peipei-java-bi/rss">RSS</a></li>
+        </ul>
+        <div id="newmsg"></div>
+        <h1>
+            <!-- 主标题 -->
+            <a id="lnkBlogTitle" href="https://www.cnblogs.com/peipei-java-bi/">培培@java</a>
+            <!-- 子标题 -->
+            <small>
+                </small>
+        </h1>
+    </div>
+
+    <script type="text/javascript">
+        var m = window.__blog.headerRendered;
+        if (m) { m(__$("header")); }
+    </script>
+
+    <div id="wrapper">
+        <div id="content">
+            <script type="text/javascript">
+                var m = window.__blog.preRenderPosts;
+                if (m) { m(); }
+            </script>
+            
+<div id="post_detail">
+<div class="post" id="post">
+    <a name="top"></a>
+    <h2><a id="cb_post_title_url" href="https://www.cnblogs.com/peipei-java-bi/p/3346946.html">Oracle自增序列在Hibernate中的配置方法</a></h2>
+    <small>2013-09-30 11:02 by 培培@java, <span id="post_view_count">7323</span> 阅读, <span id="post_comment_count">0</span> 评论, <a href="https://www.cnblogs.com/peipei-java-bi/archive/2013/09/30/3346946.html#" onclick="AddToWz(3346946);return false;">收藏</a>,  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=3346946" rel="nofollow">编辑</a></small>
+    <div class="entry">
+        <div id="cnblogs_post_body" class="blogpost-body"><div class="bct fc05 fc11 nbw-blog ztag js-fs2">
+<p>在很多情况下，我们使用Hibernate在已经建立好数据库的基础上。在oracle中，假如已经建立好的数据库中使用了sequence,则可以按照下面的步骤把它引入到Hibernate中：<br>?? <br>?? 1、在oracle 首先创建sequence</p>
+<p>?</p>
+<pre name="code">CREATE SEQUENCE SEQ_ID      
+INCREMENT BY 1          
+START WITH 1     
+NOMINVALUE              
+NOMAXVALUE               
+NOCYCLE       
+NOCACHE      
+NOORDER; </pre>
+<p>??</p>
+<p>?? 2.在你的hbm.xml中的配置</p>
+<p>?</p>
+<pre name="code">&lt;id column="ID0000" name="id" type="integer"&gt;
+      &lt;generator class="sequence"&gt;
+           &lt;param name="sequence"&gt;seq_id&lt;/param&gt;
+      &lt;/generator&gt;
+&lt;/id&gt;</pre>
+<p>??</p>
+<p>?? 这样再插入数据的时候，Hibernate回自动生成如下语句：</p>
+<p>?</p>
+<pre name="code">hibernate: select seq_id.nextval from dual
+hibernate:  insert into YXJK.T_YXJK_WHRYTXL (XM0000, ZW0000, LXDH00, SJHM00, DZYJ00,  IP0000,     ID0000) values (?, ?, ?, ?, ?, ?, ?)?</pre>
+<p>??</p>
+<p>?? 自动生成下一个序列值，然后将对象插入表中。<br>?? 在使用的时候需要注重，Hibernate对于sequence的主键的要求是一定要是shor,long，或者integer</p>
+<p>根据hibernate的文档，有两种方式实现实体对象的主键自动增长。<br>第一种：设置ID的增长策略是sequence，同时指定sequence的名字，最好每个表建一个sequence，此种做法就如同MS-SQL,MY-SQL中的自动增长一样，不需要创建触发器，具体的oracle数据库脚本及hibernate配置文件如下：</p>
+<p><br>[1]oracle数据表的创建脚本：</p>
+<p>?</p>
+<pre name="code">CREATE TABLE DEPARTMENT (      
+     ID NUMBER(19,0) DEFAULT '0' NOT NULL,      
+     NAME VARCHAR2(255) NOT NULL,      
+     DESCRIPTION CLOB      
+ ); 
+     
+ALTER TABLE DEPARTMENT ADD CONSTRAINT PRIMARY_0 PRIMARY KEY(ID) ENABLE;
+      
+ALTER TABLE DEPARTMENT ADD CONSTRAINT UK_DEPARTMENT_1 UNIQUE (NAME);
+      
+CREATE SEQUENCE DEPARTMENT_ID_SEQ MINVALUE 10000 MAXVALUE 999999999999999999999999 INCREMENT BY 1 NOCYCLE;? </pre>
+<p>?</p>
+<p>创建DEPARTMENT表，并为DEPARTMENT表创建一个单独的SEQUENCE，名字为SEQUENCE_ID_SEQ，并不需要创建触发器。</p>
+<p>[2]hibernate映射文件的配置：???????</p>
+<p>?</p>
+<pre name="code">&lt;?xml version="1.0"?&gt;      
+ &lt;!DOCTYPE hibernate-mapping PUBLIC      
+       "-//Hibernate/Hibernate Mapping DTD 3.0//EN"    
+           "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;      
+ &lt;hibernate-mapping package="com.liyanframework.demo.domain"&gt;      
+     &lt;class name="Department" table="DEPARTMENT"&gt;      
+         &lt;id name="id" column="ID"&gt;      
+             &lt;generator class="sequence"&gt;      
+                 &lt;param name="sequence"&gt;DEPARTMENT_ID_SEQ&lt;/param&gt;      
+            &lt;/generator&gt;      
+         &lt;/id&gt;      
+         &lt;property name="name" column="NAME" type="string" /&gt;      
+         &lt;property name="description" column="DESCRIPTION" type="text" /&gt;      
+     &lt;/class&gt;      
+&lt;/hibernate-mapping&gt;</pre>
+<p>???? <br>在hibernate映射文件中，对ID的生成策略选择sequence，指定sequence的名字
+DEPARTMENT_ID_SEQ就可以了，当你保存新对象的时候，hibernate会自动取得DEPARTMENT_ID_SEQ.NEXTVAL
+作为新对象的ID保存到数据库，所以不需要再使用触发器再来生成新记录的ID。</p>
+<p><br>第二种：设置ID的增长策略是native，但是需要创建一个名字为hibernate_sequence（这个名字似乎是
+hibernate默认的sequence名字，不创建会出错的）的全局使用的sequence，然后再对每一个表的ID生成的时候，使用触发器，取得 
+hibernate_sequence.CURRVAL作为新记录的ID，具体的oracle数据库脚本及hibernate配置文件如下：</p>
+<p><br>[1]oracle数据表的创建脚本：</p>
+<p>? </p>
+<pre name="code">CREATE TABLE STAFF (      
+     ID NUMBER(19,0) DEFAULT '0' NOT NULL,      
+     NAME VARCHAR2(255) NOT NULL,      
+     AGE NUMBER(3,0) NOT NULL,      
+     BIRTHDAY DATE NOT NULL,      
+     SALARY NUMBER(10,2) NOT NULL,      
+     LEVELNESS FLOAT NOT NULL,      
+     CREATETIME TIMESTAMP NOT NULL,      
+     ENABLE CHAR(2) DEFAULT 'Y' NOT NULL,      
+     STATUS VARCHAR2(64) NOT NULL,      
+     DEPARTMENT_ID NUMBER(19,0)      
+);   
+   
+ALTER TABLE STAFF ADD CONSTRAINT PRIMARY_1 PRIMARY KEY(ID) ENABLE;      
+
+ALTER TABLE STAFF ADD CONSTRAINT STAFF_IBFK_0 FOREIGN KEY(DEPARTMENT_ID) REFERENCES DEPARTMENT(ID) ENABLE;      
+
+ALTER TABLE STAFF ADD CONSTRAINT UK_STAFF_1 UNIQUE (NAME); 
+     
+CREATE INDEX IDX_STAFF_STATUS ON STAFF(STATUS);      
+      
+CREATE SEQUENCE HIBERNATE_SEQUENCE
+INCREMENT BY 1 
+MINVALUE 90000 
+MAXVALUE 999999999999999999999999 
+NOCYCLE;      
+      
+CREATE OR REPLACE TRIGGER STAFF_ID_TRG BEFORE INSERT ON STAFF  FOR EACH ROW      
+BEGIN      
+    IF INSERTING AND :NEW.ID IS NULL THEN      
+    SELECT HIBERNATE_SEQUENCE.CURRVAL INTO :NEW.ID FROM DUAL;      
+    END IF;      
+END;</pre>
+<p>?? <br>创建STAFF表，但是并没有为STAFF创建相应的主键sequence，而是创建了一个名字为
+HIBERNATE_SEQUENCE的 
+sequence，然后创建一个触发器STAFF_ID_TRG，当执行INSERT操作时，hibernate会先执行一次 
+HIBERNATE_SEQUENCE.NEXTVAL，所以在触发器中只需要取得HIBERNATE_SEQUENCE.CURRVAL作为新记录的 
+ID。</p>
+<p>[2]hibernate映射文件的配置：</p>
+<p>?</p>
+<pre name="code">&lt;?xml version="1.0"?&gt;      
+&lt;!DOCTYPE hibernate-mapping PUBLIC      
+       "-//Hibernate/Hibernate Mapping DTD 3.0//EN"    
+           "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd"&gt;      
+&lt;hibernate-mapping package="com.liyanframework.demo.domain"&gt;      
+     &lt;class name="Staff" table="STAFF"&gt;      
+         &lt;id name="id" column="ID"&gt;      
+             &lt;generator class="native" /&gt;      
+         &lt;/id&gt;      
+         &lt;property name="name" column="NAME" type="string" /&gt;      
+         &lt;property name="age" column="AGE" type="integer" /&gt;      
+         &lt;property name="birthday" column="BIRTHDAY" type="date" /&gt;      
+         &lt;property name="salary" column="SALARY" type="big_decimal" /&gt;      
+         &lt;property name="level" column="LEVELNESS" type="float" /&gt;      
+         &lt;property name="createTime" column="CREATETIME" type="timestamp" /&gt;      
+         &lt;property name="enable" column="ENABLE" type="character" /&gt;      
+         &lt;property name="status" column="STATUS" type="string" /&gt;      
+         &lt;many-to-one name="department" column="DEPARTMENT_ID" class="Department" /&gt;      
+     &lt;/class&gt;      
+&lt;/hibernate-mapping&gt;</pre>
+<p>???</p>
+<p>在hibernate映射文件中，对ID的生成策略选择native，hibernate会根据你数据库的触发器来生成新记录的ID。</p>
+<p>比较两种做法，第二种做法也就是hibernate在代码中，实现了oracle中的触发器功能。对于不同的情况，选择不懂的做法。假如新的系统， 新建的oracle数据库，推荐使用第一种做法，简单，轻易移植到其他支持自动增长的数据库；假如是老的系统，需要把其他数据库转换为oracle 的，那就要用第二种了，使用native的方式，可以不改动配置文件，兼容oracle和mysql之类带有自动增长的数据库。</p>
+</div></div><div id="MySignature"></div>
+        <div class="clear"></div>
+        <div id="blog_post_info_block">
+        <div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(3346946,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;1fc650dd-8b51-e211-aa8f-842b2b196315&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/peipei-java-bi/" target="_blank"><img src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/20130627170802.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/peipei-java-bi/">培培@java</a><br>
+            <a href="http://home.cnblogs.com/u/peipei-java-bi/followees">关注 - 7</a><br>
+            <a href="http://home.cnblogs.com/u/peipei-java-bi/followers">粉丝 - 4</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;1fc650dd-8b51-e211-aa8f-842b2b196315&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(3346946,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(3346946,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">1</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+        <div class="clear"></div>
+        <div id="post_next_prev"><a href="https://www.cnblogs.com/peipei-java-bi/p/3341221.html" class="p_n_p_prefix">« </a> 上一篇：<a href="https://www.cnblogs.com/peipei-java-bi/p/3341221.html" title="发布于2013-09-26 17:32">诡异的java问题（Jsp显示问题）</a><br><a href="https://www.cnblogs.com/peipei-java-bi/p/3347177.html" class="p_n_p_prefix">» </a> 下一篇：<a href="https://www.cnblogs.com/peipei-java-bi/p/3347177.html" title="发布于2013-09-30 14:01">警告：Parameters:Invalid chunk ignored</a><br></div>
+    </div>
+</div>
+    <ul class="postmetadata">
+        <li class="icon_cat" id="BlogPostCategory"></li>
+        <li class="icon_bullet" id="EntryTag">标签: <a href="https://www.cnblogs.com/peipei-java-bi/tag/oracle%20hibernate/">oracle hibernate</a></li>
+    </ul>
+</div>
+<script type="text/javascript">var allowComments=true,cb_blogId=155781,cb_entryId=3346946,cb_blogApp=currentBlogApp,cb_blogUserGuid='1fc650dd-8b51-e211-aa8f-842b2b196315',cb_entryCreatedDate='2013/9/30 11:02:00';loadViewCount(cb_entryId);var cb_postType=1;</script>
+<script type="text/javascript">
+    var m = window.__blog.postRendered;
+    if (m) { m(__$("post")); }
+</script>
+<script type="text/javascript">
+    var m = window.__blog.postRenderPosts;
+    if (m) { m(); }
+</script>
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/peipei-java-bi/archive/2013/09/30/3346946.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/peipei-java-bi/archive/2013/09/30/3346946.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】超50万VC++源码: 大型组态工控、电力仿真CAD与GIS源码库！</a><br><a href="https://cloud.tencent.com/developer/edu/major-100008?fromSource=gwzcw.1297698.1297698.1297698" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-腾讯蓝鲸&#39;)">【推荐】企业SaaS应用开发实战，快速构建企业运营/运维系统</a><br><a href="https://www.grapecity.com.cn/developer/activereports?utm_source=cnblogs&amp;utm_medium=blogpage&amp;utm_term=bottom&amp;utm_content=AR&amp;utm_campaign=community" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-ActiveReports&#39;)">【推荐】ActiveReports 报表控件，全面满足 .NET开发需求</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="https://cloud.tencent.com/act/ecommerce?fromSource=gwzcw.1191780.1191780.1191780" target="_blank"><img width="300" height="250" src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/24442-20180814102629155-1096944426.png" alt="qcloud0814" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;C1&#39;);"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="https://news.cnblogs.com/n/605650/" target="_blank">纳指与标普500指数创新高 哔哩哔哩大涨13.44%</a><br> ·  <a href="https://news.cnblogs.com/n/605651/" target="_blank">面板市场供过于求 京东方上半年净利下降38%</a><br> ·  <a href="https://news.cnblogs.com/n/605659/" target="_blank">百度在国际市场失去的十年</a><br> ·  <a href="https://news.cnblogs.com/n/605604/" target="_blank">中国队夺冠！但胜利不仅仅属于他们</a><br> ·  <a href="https://news.cnblogs.com/n/605653/" target="_blank">这就是FF91首台预量产车真身 贾跃亭官宣</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="http://clickc.admaster.com.cn/c/a113319,b2799157,c1705,i0,m101,8a1,8b3,h" target="_blank"><img width="468" height="60" src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/24442-20180821211532241-413062430.jpg" alt="华为CH0822" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;C2&#39;);"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="https://kb.cnblogs.com/page/603663/" target="_blank">如何招到一个靠谱的程序员</a><br> ·  <a href="https://kb.cnblogs.com/page/573614/" target="_blank">一个故事看懂“区块链”</a><br> ·  <a href="https://kb.cnblogs.com/page/603697/" target="_blank">被踢出去的用户</a><br> ·  <a href="https://kb.cnblogs.com/page/603279/" target="_blank">成为一个有目标的学习者</a><br> ·  <a href="https://kb.cnblogs.com/page/602903/" target="_blank">历史转折中的“杭派工程师”</a><br></div>» <a href="https://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+        </div>
+
+        <script type="text/javascript">
+            var m = window.__blog.contentRendered;
+            if (m) { m(__$("content")); }
+        </script>
+
+        <div id="sidebar">
+            
+<div id="about">
+<div>
+<h2 id="about_title">About</h2>
+<div id="about_body">
+<div id="blog-news"><div id="profile_block">昵称：<a href="https://home.cnblogs.com/u/peipei-java-bi/">培培@java</a><br>园龄：<a href="https://home.cnblogs.com/u/peipei-java-bi/" title="入园时间：2012-12-29">5年8个月</a><br>粉丝：<a href="https://home.cnblogs.com/u/peipei-java-bi/followers/">4</a><br>关注：<a href="https://home.cnblogs.com/u/peipei-java-bi/followees/">7</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;1fc650dd-8b51-e211-aa8f-842b2b196315&#39;)">+加关注</a></div><script>getFollowStatus('1fc650dd-8b51-e211-aa8f-842b2b196315')</script></div></div>
+<script type="text/javascript">loadBlogNews();</script>
+</div>
+</div>
+</div>
+
+            <script type="text/javascript">
+                var m = window.__blog.aboutRendered;
+                if (m) { m(__$("about")); }
+            </script>
+            
+<div id="mySearchWrapper">
+    <div id="mySearch">
+        <input type="image" src="./Oracle自增序列在Hibernate中的配置方法 - 培培@java - 博客园_files/btnsearch.gif" id="btnZzk" class="submit" onclick="zzk_go();return false;">
+        <label class="lb_search"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="keyword"></label>
+    </div>
+</div>
+
+            <script type="text/javascript">
+                var m = window.__blog.searchFormRendered;
+                if (m) { m(__$("searchform")); }
+            </script>
+            <div id="sideMain">
+            <div id="side-recent-comments">
+        <h2>最新评论</h2>
+        <ul class="voice">
+        </ul>
+    </div></div>
+            <div id="sideRight">
+            <div id="side-archives">
+        <h2>随笔档案</h2>
+        <ul class="date">
+                <li><a href="https://www.cnblogs.com/peipei-java-bi/archive/2013/12.html">2013年12月(1)</a></li>
+                <li><a href="https://www.cnblogs.com/peipei-java-bi/archive/2013/10.html">2013年10月(1)</a></li>
+                <li><a href="https://www.cnblogs.com/peipei-java-bi/archive/2013/09.html">2013年9月(3)</a></li>
+                <li><a href="https://www.cnblogs.com/peipei-java-bi/archive/2013/08.html">2013年8月(2)</a></li>
+                <li><a href="https://www.cnblogs.com/peipei-java-bi/archive/2013/07.html">2013年7月(1)</a></li>
+        </ul>
+    </div>    
+    
+
+    
+
+    
+
+
+</div>
+            <div id="sideLeft">
+            <div id="side-calendar">
+        <h2>日历</h2>
+        <div id="blog-calendar"><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2018/07/01&#39;);return false;">&lt;</a></td><td align="center">2018年8月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2018/09/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalOtherMonthDay" align="center">31</td><td align="center">1</td><td align="center">2</td><td align="center">3</td><td class="CalWeekendDay" align="center">4</td></tr><tr><td class="CalWeekendDay" align="center">5</td><td align="center">6</td><td align="center">7</td><td align="center">8</td><td align="center">9</td><td align="center">10</td><td class="CalWeekendDay" align="center">11</td></tr><tr><td class="CalWeekendDay" align="center">12</td><td align="center">13</td><td align="center">14</td><td align="center">15</td><td align="center">16</td><td align="center">17</td><td class="CalWeekendDay" align="center">18</td></tr><tr><td class="CalWeekendDay" align="center">19</td><td align="center">20</td><td align="center">21</td><td align="center">22</td><td align="center">23</td><td align="center">24</td><td class="CalWeekendDay" align="center">25</td></tr><tr><td class="CalWeekendDay" align="center">26</td><td align="center">27</td><td align="center">28</td><td class="CalTodayDay" align="center">29</td><td align="center">30</td><td align="center">31</td><td class="CalOtherMonthDay" align="center">1</td></tr><tr><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td><td class="CalOtherMonthDay" align="center">6</td><td class="CalOtherMonthDay" align="center">7</td><td class="CalOtherMonthDay" align="center">8</td></tr>
+</tbody></table></div>
+    </div><div id="side-hottags">
+        <h2>我的标签</h2>
+        <ul class="folder">
+            <li><a href="https://www.cnblogs.com/peipei-java-bi/tag/java%20%20jsp/">java  jsp</a>(1)</li><li><a href="https://www.cnblogs.com/peipei-java-bi/tag/java%20jsp/">java jsp</a>(1)</li><li><a href="https://www.cnblogs.com/peipei-java-bi/tag/js/">js</a>(1)</li><li><a href="https://www.cnblogs.com/peipei-java-bi/tag/oracle/">oracle</a>(1)</li><li><a href="https://www.cnblogs.com/peipei-java-bi/tag/oracle%20hibernate/">oracle hibernate</a>(1)</li><li><a href="https://www.cnblogs.com/peipei-java-bi/tag/web%E5%AF%BC%E5%87%BAexcel%E6%A0%BC%E5%BC%8F%E9%97%AE%E9%A2%98/">web导出excel格式问题</a>(1)</li><li><a href="https://www.cnblogs.com/peipei-java-bi/tag/%E9%A1%B5%E6%95%B0/">页数</a>(1)</li>
+        </ul>
+    </div><div id="side-top-posts-custom">
+    <h2>推荐排行榜</h2>
+    <div id="TopDiggPostsBlock"></div>
+</div><div id="side-top-posts">
+    <h2>阅读排行榜</h2>
+    <div id="TopViewPostsBlock"><ul><li><a href="https://www.cnblogs.com/peipei-java-bi/p/3346946.html">1. Oracle自增序列在Hibernate中的配置方法(7322)</a></li><li><a href="https://www.cnblogs.com/peipei-java-bi/p/3347177.html">2. 警告：Parameters:Invalid chunk ignored(139)</a></li><li><a href="https://www.cnblogs.com/peipei-java-bi/p/3285600.html">3. 标记一下web导出excel格式问题(101)</a></li><li><a href="https://www.cnblogs.com/peipei-java-bi/p/3490803.html">4. 记录下网址(88)</a></li><li><a href="https://www.cnblogs.com/peipei-java-bi/p/3360572.html">5. js实现按左键右键分别为上一页和下一页及js keycode 列表(88)</a></li></ul></div>
+</div></div>
+            
+                <div id="sideContainer"></div>
+                <script type="text/javascript">
+                    $.ajax({
+                        url: '/' + currentBlogApp + '/mvc/blog/Minyx2_Lite_SideColumn.aspx',
+                        data: '{}',
+                        type: 'post',
+                        dataType: 'text',
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            if (data) {
+                                $("#sideContainer").html(data);
+                                loadBlogDefaultCalendar();
+                                loadBlogSideBlocks();
+                                var m = window.__blog.sideContainerRendered;
+                                if (m) { m(__$("sideContainer")); }
+                                window.__blog.sidebar.__layout();
+                            }
+                        }
+                    });
+
+                </script>
+            
+        </div>
+
+        <script type="text/javascript">
+            var m = window.__blog.sidebarRendered;
+            if (m) { m(__$("sidebar")); }
+        </script>
+
+        <div id="footer">
+            
+<p id="logoFoot">
+    <a href="http://www.spiga.com.mx/" title="Agencia Interactiva Spiga">www.spiga.com.mx</a>
+</p>
+<div class="footText">
+<p>
+Copyright ©2018 培培@java
+</p>
+<p>
+<a href="http://www.cnblogs.com/">博客园</a>
+</p>
+</div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        var m = window.__blog.wrapperRendered;
+        if (m) { m(__$("wrapper")); }
+    </script>
+
+</div>
+<script type="text/javascript">
+    var m = window.__blog.containerRendered;
+    if (m) { m(__$("container")); }
+</script>
+
+
+</body></html>

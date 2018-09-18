@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<!-- saved from url=(0055)https://www.cnblogs.com/xuningchuanblogs/p/7683866.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="origin">
+<title>SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/bundle-coffee.css">
+<link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/bundle-coffee-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/xuningchuanblogs/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/xuningchuanblogs/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/xuningchuanblogs/wlwmanifest.xml">
+<script async="" src="https://www.google-analytics.com/analytics.js"></script><script type="text/javascript" src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/encoder.js"></script><script src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/jquery-2.2.0.min.js"></script>
+<script type="text/javascript">var currentBlogApp = 'xuningchuanblogs', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/blog-common.js" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/xuningchuanblogs/"><img id="blogLogo" src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/xuningchuanblogs/">潇雨随缘</a></h1>
+<h2></h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		<div id="navigator">
+			
+<ul id="navList">
+	<li><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+	<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/xuningchuanblogs/">首页</a></li>
+	<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+	<li><a id="blog_nav_contact" accesskey="9" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E6%BD%87%E9%9B%A8%E9%9A%8F%E7%BC%98">联系</a></li>
+	<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+	<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/xuningchuanblogs/rss">订阅</a>
+	<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/xuningchuanblogs/rss"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/xml.gif" alt="订阅"></a></li>
+</ul>
+
+
+			<div class="blogStats">
+				
+				<div id="blog_stats">
+<!--done-->
+随笔- 24&nbsp;
+文章- 0&nbsp;
+评论- 2&nbsp;
+</div>
+				
+			</div><!--end: blogStats -->
+		</div><!--end: navigator 博客导航栏 -->
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/xuningchuanblogs/p/7683866.html">SpringMVC 实现文件的上传与下载</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body" class="blogpost-body"><p>一&nbsp; 配置SpringMVC ,并导入与文件上传下载有关的jar包（在此不再赘述）</p>
+<p>二 新建 相应 jsp 和controller</p>
+<p>FileUpAndDown.jsp</p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="background-color: #ffff00; color: #000000">&lt;%</span><span style="background-color: #f5f5f5; color: #000000">@ page language</span><span style="background-color: #f5f5f5; color: #000000">=</span><span style="background-color: #f5f5f5; color: #800000">"</span><span style="background-color: #f5f5f5; color: #800000">java</span><span style="background-color: #f5f5f5; color: #800000">"</span><span style="background-color: #f5f5f5; color: #000000"> contentType</span><span style="background-color: #f5f5f5; color: #000000">=</span><span style="background-color: #f5f5f5; color: #800000">"</span><span style="background-color: #f5f5f5; color: #800000">text/html; charset=UTF-8</span><span style="background-color: #f5f5f5; color: #800000">"</span><span style="background-color: #f5f5f5; color: #000000">
+    pageEncoding</span><span style="background-color: #f5f5f5; color: #000000">=</span><span style="background-color: #f5f5f5; color: #800000">"</span><span style="background-color: #f5f5f5; color: #800000">UTF-8</span><span style="background-color: #f5f5f5; color: #800000">"</span><span style="background-color: #ffff00; color: #000000">%&gt;</span>
+<span style="color: #0000ff">&lt;!</span><span style="color: #ff00ff">DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;</span><span style="color: #800000">html</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;</span><span style="color: #800000">head</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;</span><span style="color: #800000">meta </span><span style="color: #ff0000">http-equiv</span><span style="color: #0000ff">="Content-Type"</span><span style="color: #ff0000"> content</span><span style="color: #0000ff">="text/html; charset=UTF-8"</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;</span><span style="color: #800000">title</span><span style="color: #0000ff">&gt;</span>Insert title here<span style="color: #0000ff">&lt;/</span><span style="color: #800000">title</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;/</span><span style="color: #800000">head</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;</span><span style="color: #800000">body</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;</span><span style="color: #800000">form </span><span style="color: #ff0000">action</span><span style="color: #0000ff">="${pageContext.request.contextPath}/fileUpLoad"</span><span style="color: #ff0000"> method</span><span style="color: #0000ff">="post"</span><span style="color: #ff0000">  enctype</span><span style="color: #0000ff">="multipart/form-data"</span><span style="color: #0000ff">&gt;</span><span style="color: #000000">
+文件名</span><span style="color: #0000ff">&lt;</span><span style="color: #800000">input </span><span style="color: #ff0000">type</span><span style="color: #0000ff">="file"</span><span style="color: #ff0000"> name</span><span style="color: #0000ff">="photo"</span><span style="color: #0000ff">/&gt;&lt;</span><span style="color: #800000">br</span><span style="color: #0000ff">/&gt;</span>
+     <span style="color: #0000ff">&lt;</span><span style="color: #800000">input </span><span style="color: #ff0000">type</span><span style="color: #0000ff">="text"</span><span style="color: #ff0000"> name</span><span style="color: #0000ff">="desc"</span><span style="color: #0000ff">/&gt;</span> <span style="color: #0000ff">&lt;</span><span style="color: #800000">br</span><span style="color: #0000ff">/&gt;</span>
+     <span style="color: #0000ff">&lt;</span><span style="color: #800000">input </span><span style="color: #ff0000">type</span><span style="color: #0000ff">="submit"</span><span style="color: #ff0000"> value</span><span style="color: #0000ff">="提交"</span><span style="color: #0000ff">/&gt;&lt;</span><span style="color: #800000">br</span><span style="color: #0000ff">/&gt;</span>
+<span style="color: #0000ff">&lt;/</span><span style="color: #800000">form</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;</span><span style="color: #800000">h3</span><span style="color: #0000ff">&gt;</span>童话镇.mp3  陈一发儿<span style="color: #0000ff">&lt;/</span><span style="color: #800000">h3</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;</span><span style="color: #800000">a </span><span style="color: #ff0000">href</span><span style="color: #0000ff">="${pageContext.request.contextPath}/fileDownLoad"</span><span style="color: #0000ff">&gt;</span>前去下载<span style="color: #0000ff">&lt;/</span><span style="color: #800000">a</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;/</span><span style="color: #800000">body</span><span style="color: #0000ff">&gt;</span>
+<span style="color: #0000ff">&lt;/</span><span style="color: #800000">html</span><span style="color: #0000ff">&gt;</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="color: #0000ff"><br>package</span><span style="color: #000000"> com.neuedu.controller;
+
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> java.io.File;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> java.io.FileInputStream;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> java.io.FileOutputStream;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> java.io.InputStream;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> java.io.OutputStream;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> java.util.UUID;
+
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> javax.servlet.ServletContext;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> javax.servlet.http.HttpServletRequest;
+
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.apache.commons.io.IOUtils;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.springframework.http.HttpHeaders;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.springframework.http.HttpStatus;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.springframework.http.ResponseEntity;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.springframework.stereotype.Controller;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.springframework.web.bind.annotation.RequestMapping;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.springframework.web.bind.annotation.RequestMethod;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.springframework.web.bind.annotation.RequestParam;
+</span><span style="color: #0000ff">import</span><span style="color: #000000"> org.springframework.web.multipart.commons.CommonsMultipartFile;
+@Controller
+</span><span style="color: #0000ff">public</span> <span style="color: #0000ff">class</span><span style="color: #000000"> FileUpAndDown {
+    @RequestMapping(value</span>="/fileUpLoad"<span style="color: #000000">)
+    </span><span style="color: #0000ff">public</span> String testUpload(HttpServletRequest request,@RequestParam(value="desc",required=<span style="color: #0000ff">false</span>) String desc,@RequestParam("photo") CommonsMultipartFile file) <span style="color: #0000ff">throws</span><span style="color: #000000"> Exception{
+        ServletContext servletContext </span>= request.getServletContext();<span style="color: #008000">//</span><span style="color: #008000">获取ServletContext的对象 代表当前WEB应用</span>
+        String realPath = servletContext.getRealPath("/uploads");<span style="color: #008000">//</span><span style="color: #008000">得到文件上传目的位置的真实路径</span>
+        System.out.println("realPath :"+<span style="color: #000000">realPath);
+        File file1 </span>= <span style="color: #0000ff">new</span><span style="color: #000000"> File(realPath);
+        </span><span style="color: #0000ff">if</span>(!<span style="color: #000000">file1.exists()){
+            file1.mkdir();   </span><span style="color: #008000">//</span><span style="color: #008000">如果该目录不存在，就创建此抽象路径名指定的目录。 </span>
+<span style="color: #000000">        }
+        String prefix </span>=<span style="color: #000000"> UUID.randomUUID().toString();
+        prefix </span>= prefix.replace("-",""<span style="color: #000000">);
+        String fileName </span>= prefix+"_"+file.getOriginalFilename();<span style="color: #008000">//</span><span style="color: #008000">使用UUID加前缀命名文件，防止名字重复被覆盖</span>
+<span style="color: #000000">        
+        InputStream in</span>= file.getInputStream();;<span style="color: #008000">//</span><span style="color: #008000">声明输入输出流</span>
+<span style="color: #000000">        
+        OutputStream out</span>=<span style="color: #0000ff">new</span> FileOutputStream(<span style="color: #0000ff">new</span> File(realPath+"\\"+fileName));<span style="color: #008000">//</span><span style="color: #008000">指定输出流的位置;</span>
+        
+        <span style="color: #0000ff">byte</span> []buffer =<span style="color: #0000ff">new</span> <span style="color: #0000ff">byte</span>[1024<span style="color: #000000">];
+        </span><span style="color: #0000ff">int</span> len=0<span style="color: #000000">;
+        </span><span style="color: #0000ff">while</span>((len=in.read(buffer))!=-1<span style="color: #000000">){
+            out.write(buffer, </span>0<span style="color: #000000">, len);
+            out.flush();                </span><span style="color: #008000">//</span><span style="color: #008000">类似于文件复制，将文件存储到输入流，再通过输出流写入到上传位置</span>
+        }                               <span style="color: #008000">//</span><span style="color: #008000">这段代码也可以用IOUtils.copy(in, out)工具类的copy方法完成</span>
+<span style="color: #000000">                                        
+        out.close();
+        in.close();
+    
+        </span><span style="color: #0000ff">return</span> "success"<span style="color: #000000">;
+    }
+    @RequestMapping(</span>"/fileDownLoad"<span style="color: #000000">)
+    </span><span style="color: #0000ff">public</span> ResponseEntity&lt;<span style="color: #0000ff">byte</span>[]&gt; fileDownLoad(HttpServletRequest request) <span style="color: #0000ff">throws</span><span style="color: #000000"> Exception{
+     
+      ServletContext servletContext </span>=<span style="color: #000000"> request.getServletContext();
+      String fileName</span>="童话镇.mp3"<span style="color: #000000">;
+      String realPath </span>= servletContext.getRealPath("/WEB-INF/"+fileName);<span style="color: #008000">//</span><span style="color: #008000">得到文件所在位置</span>
+        InputStream in=<span style="color: #0000ff">new</span> FileInputStream(<span style="color: #0000ff">new</span> File(realPath));<span style="color: #008000">//</span><span style="color: #008000">将该文件加入到输入流之中</span>
+         <span style="color: #0000ff">byte</span>[] body=<span style="color: #0000ff">null</span><span style="color: #000000">;
+         body</span>=<span style="color: #0000ff">new</span> <span style="color: #0000ff">byte</span>[in.available()];<span style="color: #008000">//</span><span style="color: #008000"> 返回下一次对此输入流调用的方法可以不受阻塞地从此输入流读取（或跳过）的估计剩余字节数</span>
+         in.read(body);<span style="color: #008000">//</span><span style="color: #008000">读入到输入流里面</span>
+<span style="color: #000000">        
+        fileName</span>=<span style="color: #0000ff">new</span> String(fileName.getBytes("gbk"),"iso8859-1");<span style="color: #008000">//</span><span style="color: #008000">防止中文乱码</span>
+        HttpHeaders headers=<span style="color: #0000ff">new</span> HttpHeaders();<span style="color: #008000">//</span><span style="color: #008000">设置响应头</span>
+        headers.add("Content-Disposition", "attachment;filename="+<span style="color: #000000">fileName);
+        HttpStatus statusCode </span>= HttpStatus.OK;<span style="color: #008000">//</span><span style="color: #008000">设置响应吗</span>
+        ResponseEntity&lt;<span style="color: #0000ff">byte</span>[]&gt; response=<span style="color: #0000ff">new</span> ResponseEntity&lt;<span style="color: #0000ff">byte</span>[]&gt;<span style="color: #000000">(body, headers, statusCode);
+        </span><span style="color: #0000ff">return</span><span style="color: #000000"> response;
+
+        </span><span style="color: #008000">//</span><span style="color: #008000">public ResponseEntity（T  body，
+        </span><span style="color: #008000">//</span><span style="color: #008000">                       MultiValueMap &lt; String，String &gt; headers，
+        </span><span style="color: #008000">//</span><span style="color: #008000">                       HttpStatus  statusCode）
+        </span><span style="color: #008000">//</span><span style="color: #008000">HttpEntity使用给定的正文，标题和状态代码创建一个新的。
+        </span><span style="color: #008000">//</span><span style="color: #008000">参数：
+        </span><span style="color: #008000">//</span><span style="color: #008000">body - 实体机构
+        </span><span style="color: #008000">//</span><span style="color: #008000">headers - 实体头
+        </span><span style="color: #008000">//</span><span style="color: #008000">statusCode - 状态码</span>
+<span style="color: #000000">    }
+}</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>JSP界面：</p>
+<p><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/1217721-20171017203104865-1649633114.png" alt=""></p>
+<p>&nbsp;</p>
+<p>上传文件：</p>
+<p>上传文件目的位置：E:\“eclipse工作目录“”\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\“项目名”\upload</p>
+<p>为了好找需要配置一个eclipse插件 如何安装地址：http://blog.csdn.net/a332056918/article/details/76180530</p>
+<p>安装成功后</p>
+<p>在eclipse下方找到Servers，右键点击即可出现如下页面，再点击Browse Deployment Location...即可跳到项目所在目录--点击项目名称即可看见 你所上传的文件夹</p>
+<p><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/1217721-20171017203851615-2034272650.png" alt=""></p>
+<p><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/1217721-20171017204449427-1248098468.png" alt=""></p>
+<p><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/1217721-20171017204540224-92049699.png" alt=""></p>
+<p><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/1217721-20171017205200193-370220134.png" alt=""></p>
+<p>下载文件：</p>
+<p>要下载的文件所在位置：</p>
+<p><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/1217721-20171017205341099-1704453207.png" alt=""></p>
+<p>&nbsp;</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(7683866,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;279e519e-03b9-486b-6db0-08d49c352df3&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/xuningchuanblogs/" target="_blank"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/20170811171352.png" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/xuningchuanblogs/">潇雨随缘</a><br>
+            <a href="http://home.cnblogs.com/u/xuningchuanblogs/followees">关注 - 1</a><br>
+            <a href="http://home.cnblogs.com/u/xuningchuanblogs/followers">粉丝 - 5</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;279e519e-03b9-486b-6db0-08d49c352df3&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(7683866,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(7683866,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/xuningchuanblogs/p/7683241.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/xuningchuanblogs/p/7683241.html" title="发布于2017-10-17 18:31">死锁简介</a><br><a href="http://www.cnblogs.com/xuningchuanblogs/p/7685948.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/xuningchuanblogs/p/7685948.html" title="发布于2017-10-18 11:58">Java多线程详解（转载）</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2017-10-17 20:55</span> <a href="http://www.cnblogs.com/xuningchuanblogs/">潇雨随缘</a> 阅读(<span id="post_view_count">7032</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=7683866" rel="nofollow">编辑</a> <a href="https://www.cnblogs.com/xuningchuanblogs/p/7683866.html#" onclick="AddToWz(7683866);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=373237,cb_entryId=7683866,cb_blogApp=currentBlogApp,cb_blogUserGuid='279e519e-03b9-486b-6db0-08d49c352df3',cb_entryCreatedDate='2017/10/17 20:55:00';loadViewCount(cb_entryId);var cb_postType=1;</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="https://www.cnblogs.com/xuningchuanblogs/p/7683866.html#" onclick="return RefreshPage();">刷新页面</a><a href="https://www.cnblogs.com/xuningchuanblogs/p/7683866.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】超50万VC++源码: 大型组态工控、电力仿真CAD与GIS源码库！</a><br><a href="https://www.grapecity.com.cn/developer/spreadjs?utm_source=cnblogs&amp;utm_medium=blogpage&amp;utm_term=bottom&amp;utm_content=SpreadJS&amp;utm_campaign=community" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-T2-Spread&#39;)">【前端】SpreadJS表格控件，可嵌入应用开发的在线Excel</a><br><a href="https://cloud.tencent.com/developer/labs?fromSource=gwzcw.1087957.1087957.1087957" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-T2 - 腾讯云&#39;)">【推荐】如何快速搭建人工智能应用？</a><br><a href="https://cloud.tencent.com/developer/salon/activity-1078?fromSource=gwzcw.1110771.1110771.1110771" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-T2-AI&#39;)">【活动】AI技术全面场景化落地实践</a><br><a href="http://challenge.xfyun.cn/?ch=bk" target="_blank" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;T2-xfyun&#39;)">【大赛】2018首届“顶天立地”AI开发者大赛</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="https://cloud.tencent.com/act/campus?fromSource=gwzcw.1087959.1087959.1087959" target="_blank"><img width="300" height="250" src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/24442-20180710085714894-1703644023.jpg" alt="腾讯云0710" onclick="ga(&#39;send&#39;, &#39;event&#39;, &#39;Link&#39;, &#39;click&#39;, &#39;C1&#39;);"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="https://news.cnblogs.com/n/602981/" target="_blank">扫二维码乘地铁今起可微信支付 将接入所有银行和第三方支付</a><br> ·  <a href="https://news.cnblogs.com/n/602980/" target="_blank">中国“自行车第一镇”风光不再，刚出厂新车遭半价贱卖</a><br> ·  <a href="https://news.cnblogs.com/n/602979/" target="_blank">董明珠：我做网红原因很多，如果不站出来发声，格力就要被收购了</a><br> ·  <a href="https://news.cnblogs.com/n/602978/" target="_blank">创维电视官方声明：拼多多平台出现大量假冒创维品牌电视</a><br> ·  <a href="https://news.cnblogs.com/n/602977/" target="_blank">阿里更新2018财年报：淘宝年度GMV约为拼多多的13.5倍</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"><a href="http://click.aliyun.com/m/9667/" target="_blank"><img src="./SpringMVC 实现文件的上传与下载 - 潇雨随缘 - 博客园_files/TB1iQKbhqmWBuNjy1XaXXXCbXXa-468-60.jpg" alt="" style="width: 468px; height: 60px;"></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/602903/" target="_blank">历史转折中的“杭派工程师”</a><br> ·  <a href="http://kb.cnblogs.com/page/602573/" target="_blank">如何提高代码质量？</a><br> ·  <a href="http://kb.cnblogs.com/page/602486/" target="_blank">在腾讯的八年，我的职业思考</a><br> ·  <a href="http://kb.cnblogs.com/page/602163/" target="_blank">为什么我离开了管理岗位</a><br> ·  <a href="http://kb.cnblogs.com/page/602053/" target="_blank">那些让人睡不着觉的bug，你有没有遭遇过？</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="https://home.cnblogs.com/u/xuningchuanblogs/">潇雨随缘</a><br>园龄：<a href="https://home.cnblogs.com/u/xuningchuanblogs/" title="入园时间：2017-08-11">11个月</a><br>粉丝：<a href="https://home.cnblogs.com/u/xuningchuanblogs/followers/">5</a><br>关注：<a href="https://home.cnblogs.com/u/xuningchuanblogs/followees/">1</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;279e519e-03b9-486b-6db0-08d49c352df3&#39;)">+加关注</a></div><script>getFollowStatus('279e519e-03b9-486b-6db0-08d49c352df3')</script></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="calendar"><div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2018/06/01&#39;);return false;">&lt;</a></td><td align="center">2018年7月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2018/08/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">24</td><td class="CalOtherMonthDay" align="center">25</td><td class="CalOtherMonthDay" align="center">26</td><td class="CalOtherMonthDay" align="center">27</td><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td></tr><tr><td class="CalWeekendDay" align="center">1</td><td align="center">2</td><td align="center">3</td><td align="center">4</td><td align="center">5</td><td align="center">6</td><td class="CalWeekendDay" align="center">7</td></tr><tr><td class="CalWeekendDay" align="center">8</td><td align="center">9</td><td align="center">10</td><td align="center">11</td><td align="center">12</td><td align="center">13</td><td class="CalWeekendDay" align="center">14</td></tr><tr><td class="CalWeekendDay" align="center">15</td><td align="center">16</td><td align="center">17</td><td align="center">18</td><td align="center">19</td><td align="center">20</td><td class="CalWeekendDay" align="center">21</td></tr><tr><td class="CalWeekendDay" align="center">22</td><td align="center">23</td><td align="center">24</td><td align="center">25</td><td align="center">26</td><td align="center">27</td><td class="CalWeekendDay" align="center">28</td></tr><tr><td class="CalTodayDay" align="center">29</td><td align="center">30</td><td align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script></div>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<div class="catListLink">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/xuningchuanblogs/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/xuningchuanblogs/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/xuningchuanblogs/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/xuningchuanblogs/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/" title="我的博客的标签列表">我的标签</a></li>
+<li><a id="itemListLink" onclick="this.blur();WarpClass(&#39;itemListLink&#39;, &#39;itemListLin_con&#39;);return false;" href="https://www.cnblogs.com/xuningchuanblogs/p/7683866.html#">更多链接</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+<ul>
+
+</ul>
+</div>
+</div></div><div id="sidebar_toptags" class="sidebar-block">
+<div class="catListTag">
+<h3 class="catListTitle">我的标签</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/oracle%20%E6%95%B0%E6%8D%AE%E5%BA%93/">oracle 数据库</a>(2)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/request%E5%92%8Cresponse%E4%B9%B1%E7%A0%81/">request和response乱码</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/Servlet%20%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E4%B8%8E%E4%B8%8B%E8%BD%BD/">Servlet 文件上传与下载</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/Spring%20%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1/">Spring 声明式事务</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/springBoot/">springBoot</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/SpringMVC/">SpringMVC</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/SQL%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2/">SQL模糊查询</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/SSM%20%20Spring%2BSpringMVC%2BMyBatis%20%20%E7%AE%80%E5%8D%95%E6%98%93%E5%AD%A6/">SSM  Spring+SpringMVC+MyBatis  简单易学</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/%E5%8F%8D%E5%B0%84/">反射</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/%E6%B3%9B%E5%9E%8B/">泛型</a>(1)</li><li><a href="http://www.cnblogs.com/xuningchuanblogs/tag/">更多</a></li>
+</ul>
+</div></div><div id="sidebar_categories">
+<div class="catListPostCategory">
+<h3 class="catListTitle">随笔分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="https://www.cnblogs.com/xuningchuanblogs/category/1087774.html">JavaWeb知识</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="https://www.cnblogs.com/xuningchuanblogs/category/1098760.html">JVM(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="https://www.cnblogs.com/xuningchuanblogs/category/1116731.html">springBoot(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="https://www.cnblogs.com/xuningchuanblogs/category/1087775.html">数据库(2)</a> </li>
+
+</ul>
+
+</div>
+
+<div class="catListPostArchive">
+<h3 class="catListTitle">随笔档案</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="https://www.cnblogs.com/xuningchuanblogs/archive/2018/04.html">2018年4月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="https://www.cnblogs.com/xuningchuanblogs/archive/2018/03.html">2018年3月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="https://www.cnblogs.com/xuningchuanblogs/archive/2017/11.html">2017年11月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="https://www.cnblogs.com/xuningchuanblogs/archive/2017/10.html">2017年10月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="https://www.cnblogs.com/xuningchuanblogs/archive/2017/09.html">2017年9月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="https://www.cnblogs.com/xuningchuanblogs/archive/2017/08.html">2017年8月 (7)</a> </li>
+
+</ul>
+
+</div>
+
+<div class="catListArticleCategory">
+<h3 class="catListTitle">文章分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_2_Link_0" href="https://www.cnblogs.com/xuningchuanblogs/category/1072747.html">java经典习题</a> </li>
+
+<li><a id="CatList_LinkList_2_Link_1" href="https://www.cnblogs.com/xuningchuanblogs/category/1072741.html">数据结构与算法</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/xuningchuanblogs/p/7688332.html#3952914">1. Re:JVM入门必看——JVM结构</a></li>
+        <li class="recent_comment_body">写的很好！通俗易懂！ 尤其是那些图片，一下子就对JVM有了大概的印象。 不像其他文章似的，直接讲什么划分、区域啥的，，都太抽象了！  赞一个~</li>
+        <li class="recent_comment_author">--小周JAVA技术分享</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/xuningchuanblogs/p/7487115.html#3789349">2. Re:简单易学的SSM（Spring+SpringMVC+MyBatis）整合</a></li>
+        <li class="recent_comment_body">川哥哥，你好棒棒哦~~~</li>
+        <li class="recent_comment_author">--丶安</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7683866.html">1. SpringMVC 实现文件的上传与下载(7032)</a></li><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7375634.html">2. java使用字节流和字符流实现文件复制(4414)</a></li><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7763225.html">3. Java 注解简介(1304)</a></li><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7852377.html">4. spring Boot登录验证之验证码 邮箱(1111)</a></li><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7688332.html">5. JVM入门必看——JVM结构(929)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7487115.html">1. 简单易学的SSM（Spring+SpringMVC+MyBatis）整合(1)</a></li><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7688332.html">2. JVM入门必看——JVM结构(1)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7352835.html">1. 关于request和response的中文乱码问题(1)</a></li><li><a href="https://www.cnblogs.com/xuningchuanblogs/p/7763225.html">2. Java 注解简介(1)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2018 潇雨随缘
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>

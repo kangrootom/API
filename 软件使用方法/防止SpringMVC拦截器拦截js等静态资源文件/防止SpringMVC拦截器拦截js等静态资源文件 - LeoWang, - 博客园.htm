@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-cn"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="origin">
+<title>防止SpringMVC拦截器拦截js等静态资源文件 - LeoWang, - 博客园</title>
+<meta property="og:description" content="SpringMVC提供&lt;mvc:resources&gt;来设置静态资源，但是增加该设置如果采用通配符的方式增加拦截器的话仍然会被拦截器拦截，可采用如下方案进行解决： 方案一、拦截器中增加针对静">
+<link type="text/css" rel="stylesheet" href="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/blog-common.css">
+<link type="text/css" rel="stylesheet" href="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/302058.css">
+<link id="mobile-style" media="only screen and (max-width: 767px)" type="text/css" rel="stylesheet" href="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/bundle-BlueSky-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="https://www.cnblogs.com/wyb628/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="https://www.cnblogs.com/wyb628/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="https://www.cnblogs.com/wyb628/wlwmanifest.xml">
+<script async="" src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/analytics.js"></script><script type="text/javascript" src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/encoder.js"></script><script src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/jquery-2.js"></script>
+<script type="text/javascript">var currentBlogApp = 'wyb628', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/blog-common.js" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="https://www.cnblogs.com/wyb628/"><img id="blogLogo" src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="https://www.cnblogs.com/wyb628/">Everglow</a></h1>
+<h2>O ever youthful, O ever weeping</h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="https://www.cnblogs.com/">博客园</a></li>
+<li><a id="blog_nav_myhome" class="menu" href="https://www.cnblogs.com/wyb628/">首页</a></li>
+<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/LeoWang%2C">联系</a></li>
+<li><a id="blog_nav_rss" class="menu" href="https://www.cnblogs.com/wyb628/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="https://www.cnblogs.com/wyb628/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<span id="stats_post_count">随笔 - 69&nbsp; </span>
+<span id="stats_article_count">文章 - 0&nbsp; </span>
+<span id="stats-comment_count">评论 - 5</span>
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="https://www.cnblogs.com/wyb628/p/6813985.html">防止SpringMVC拦截器拦截js等静态资源文件</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body" class="blogpost-body"><p><span style="font-size: 16px">SpringMVC提供&lt;mvc:resources&gt;来设置静态资源，但是增加该设置如果采用通配符的方式增加拦截器的话仍然会被拦截器拦截，可采用如下方案进行解决：</span></p>
+<p><span style="font-size: 16px"><strong>方案一、拦截器中增加针对静态资源不进行过滤(涉及spring-mvc.xml)</strong></span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="font-size: 16px"> 1 &lt;mvc:resources location="/" mapping="/**/*.js"/&gt;  
+ 2 &lt;mvc:resources location="/" mapping="/**/*.css"/&gt;  
+ 3 &lt;mvc:resources location="/assets/" mapping="/assets/**/*"/&gt;  
+ 4 &lt;mvc:resources location="/images/" mapping="/images/*" cache-period="360000"/&gt;
+ 5 
+ 6 &lt;mvc:interceptors&gt;
+ 7     &lt;mvc:interceptor&gt;
+ 8         &lt;mvc:mapping path="/**/*"/&gt;
+ 9         &lt;mvc:exclude-mapping path="/**/fonts/*"/&gt;
+10         &lt;mvc:exclude-mapping path="/**/*.css"/&gt;
+11         &lt;mvc:exclude-mapping path="/**/*.js"/&gt;
+12         &lt;mvc:exclude-mapping path="/**/*.png"/&gt;
+13         &lt;mvc:exclude-mapping path="/**/*.gif"/&gt;
+14         &lt;mvc:exclude-mapping path="/**/*.jpg"/&gt;
+15         &lt;mvc:exclude-mapping path="/**/*.jpeg"/&gt;
+16         &lt;mvc:exclude-mapping path="/**/*login*"/&gt;
+17         &lt;mvc:exclude-mapping path="/**/*Login*"/&gt;
+18         &lt;bean class="com.luwei.console.mg.interceptor.VisitInterceptor"&gt;&lt;/bean&gt;
+19     &lt;/mvc:interceptor&gt;
+20 &lt;/mvc:interceptors&gt;</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-size: 16px">&nbsp;</span></p>
+<p><span style="font-size: 16px"><strong>方案二、使用默认的静态资源处理Servlet处理静态资源(涉及spring-mvc.xml, web.xml)</strong></span></p>
+<p><span style="font-size: 16px">在spring-mvc.xml中启用默认Servlet</span></p>
+<div class="cnblogs_code">
+<pre><span style="font-size: 16px">1 &lt;mvc:default-servlet-handler/&gt;</span></pre>
+</div>
+<p><span style="font-size: 16px">在web.xml中增加对静态资源的处理</span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="font-size: 16px">1 &lt;servlet-mapping&gt;    
+2     &lt;servlet-name&gt;default&lt;/servlet-name&gt;    
+3     &lt;url-pattern&gt;*.js&lt;/url-pattern&gt;    
+4     &lt;url-pattern&gt;*.css&lt;/url-pattern&gt;    
+5     &lt;url-pattern&gt;/assets/*"&lt;/url-pattern&gt;    
+6     &lt;url-pattern&gt;/images/*&lt;/url-pattern&gt;    
+7 &lt;/servlet-mapping&gt; </span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-size: 16px">但是当前的设置必须在Spring的Dispatcher的前面</span></p>
+<p><span style="font-size: 16px">&nbsp;</span></p>
+<p><span style="font-size: 16px"><strong>方案三、修改Spring的全局拦截设置为*.do的拦截（涉及web.xml）</strong></span></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><span style="font-size: 16px"> 1 &lt;servlet&gt;
+ 2     &lt;servlet-name&gt;SpringMVC&lt;/servlet-name&gt;
+ 3     &lt;servlet-class&gt;org.springframework.web.servlet.DispatcherServlet&lt;/servlet-class&gt;
+ 4     &lt;init-param&gt;
+ 5         &lt;param-name&gt;contextConfigLocation&lt;/param-name&gt;
+ 6         &lt;param-value&gt;classpath:spring-mvc.xml&lt;/param-value&gt;
+ 7     &lt;/init-param&gt;
+ 8     &lt;load-on-startup&gt;1&lt;/load-on-startup&gt;
+ 9     &lt;async-supported&gt;true&lt;/async-supported&gt;
+10 &lt;/servlet&gt;
+11 &lt;servlet-mapping&gt;
+12     &lt;servlet-name&gt;SpringMVC&lt;/servlet-name&gt;
+13     &lt;url-pattern&gt;*.action&lt;/url-pattern&gt;
+14 &lt;/servlet-mapping&gt;</span></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p><span style="font-size: 16px">这样设置，Spring就会只针对以'.do'结尾的请求进行处理，不再维护静态资源</span></p>
+<p><span style="font-size: 16px">&nbsp;</span></p>
+<p><span style="font-size: 16px">针对这三种方案的优劣分析：</span></p>
+<p><span style="font-size: 16px">　　第一种方案配置比较臃肿，多个拦截器时增加文件行数，不推荐使用；</span></p>
+<p><span style="font-size: 16px">　　第二种方案使用默认的Servlet进行资源文件的访问，Spring拦截所有请求，然后再将资源文件交由默认的Sevlet进行处理，性能上少有损耗；</span></p>
+<p><span style="font-size: 16px">　　第三种方案Spring只是处理以'.action'结尾的访问，性能上更加高效，但是再访问路径上必须都以'.action'结尾，URL不太文雅；</span></p>
+<p><span style="font-size: 16px">综上所述，推荐使用第二和第三种方案</span></p>
+<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><strong>在SpringMVC3.0之后推荐使用：&nbsp;</strong></p>
+<div class="cnblogs_code"><div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div>
+<pre><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.html"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.ico"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.js"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.css"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.png"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.gif"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.jpg"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.ttf"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.woff"/&gt;</strong><br><strong>&lt;mvc:resources location="/WEB-INF/html/" mapping="/**/*.woff2"/&gt;</strong></pre>
+<div class="cnblogs_code_toolbar"><span class="cnblogs_code_copy"><a href="javascript:void(0);" onclick="copyCnblogsCode(this)" title="复制代码"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/copycode.gif" alt="复制代码"></a></span></div></div>
+<p>&nbsp;</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(6813985,cb_blogId,1);green_channel_success(this,'谢谢推荐！');">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow('ec3152b0-e46c-e611-9fc1-ac853d9f53cc');" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/wyb628/" target="_blank"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/sample_face.gif" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/wyb628/">LeoWang,</a><br>
+            <a href="http://home.cnblogs.com/u/wyb628/followees">关注 - 2</a><br>
+            <a href="http://home.cnblogs.com/u/wyb628/followers">粉丝 - 5</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow('ec3152b0-e46c-e611-9fc1-ac853d9f53cc');return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(6813985,'Digg')">
+        <span class="diggnum" id="digg_count">1</span>
+    </div>
+    <div class="buryit" onclick="votePost(6813985,'Bury')">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+<script type="text/javascript">
+    currentDiggType = 0;
+</script></div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="https://www.cnblogs.com/wyb628/p/6809716.html" class="p_n_p_prefix">« </a> 上一篇：<a href="https://www.cnblogs.com/wyb628/p/6809716.html" title="发布于2017-05-04 20:42">Tomcat配置虚拟目录</a><br><a href="https://www.cnblogs.com/wyb628/p/6836711.html" class="p_n_p_prefix">» </a> 下一篇：<a href="https://www.cnblogs.com/wyb628/p/6836711.html" title="发布于2017-05-10 16:38">网络代理</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2017-05-05 17:12</span> <a href="https://www.cnblogs.com/wyb628/">LeoWang,</a> 阅读(<span id="post_view_count">11554</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=6813985" rel="nofollow">编辑</a> <a href="#" onclick="AddToWz(6813985);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=302058,cb_entryId=6813985,cb_blogApp=currentBlogApp,cb_blogUserGuid='ec3152b0-e46c-e611-9fc1-ac853d9f53cc',cb_entryCreatedDate='2017/5/5 17:12:00';loadViewCount(cb_entryId);var cb_postType=1;</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login('commentform');">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】超50万VC++源码: 大型组态工控、电力仿真CAD与GIS源码库！</a><br><a href="https://www.grapecity.com.cn/developer/spreadjs?utm_source=cnblogs&amp;utm_medium=blogpage&amp;utm_term=bottom&amp;utm_content=SpreadJS&amp;utm_campaign=community" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T2-T2-Spread')">【前端】SpreadJS表格控件，可嵌入应用开发的在线Excel</a><br><a href="http://www.toastenglish.com/1024/cnblogs.html" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T2-T2-toast')">【免费】程序员21天搞定英文文档阅读</a><br><a href="https://cloud.tencent.com/developer/edu/major-100008?fromSource=gwzcw.1297698.1297698.1297698" target="_blank" onclick="ga('send', 'event', 'Link', 'click', 'T2-腾讯蓝鲸')">【推荐】腾讯蓝鲸SaaS开发技能专业课程，助你入门全栈工程师</a><br></div>
+<div id="opt_under_post"></div>
+<div id="cnblogs_c1" class="c_ad_block"><a href="https://cloud.tencent.com/act/ecommerce?fromSource=gwzcw.1191780.1191780.1191780" target="_blank"><img src="%E9%98%B2%E6%AD%A2SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8%E6%8B%A6%E6%88%AAjs%E7%AD%89%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E6%96%87%E4%BB%B6%20-%20LeoWang,%20-%20%E5%8D%9A%E5%AE%A2%E5%9B%AD_files/24442-20180814102629155-1096944426.png" alt="qcloud0814" onclick="ga('send', 'event', 'Link', 'click', 'C1');" width="300" height="250"></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="https://news.cnblogs.com/n/605045/" target="_blank">外媒：滴滴全业务线年增长70% 汽车相关业务是新增长点</a><br> ·  <a href="https://news.cnblogs.com/n/605044/" target="_blank">Uber招募前美林证券高管担任CFO 为明年IPO做准备</a><br> ·  <a href="https://news.cnblogs.com/n/605042/" target="_blank">知名做空机构香椽：英伟达将跌至200美元</a><br> ·  <a href="https://news.cnblogs.com/n/605041/" target="_blank">Netflix测试全新支付方式 不让苹果“雁过拔毛”</a><br> ·  <a href="https://news.cnblogs.com/n/605040/" target="_blank">日本拟强迫运营商停止手机捆绑 或打击iPhone销量</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="cnblogs_c2" class="c_ad_block"></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="https://kb.cnblogs.com/page/573614/" target="_blank">一个故事看懂“区块链”</a><br> ·  <a href="https://kb.cnblogs.com/page/603697/" target="_blank">被踢出去的用户</a><br> ·  <a href="https://kb.cnblogs.com/page/603279/" target="_blank">成为一个有目标的学习者</a><br> ·  <a href="https://kb.cnblogs.com/page/602903/" target="_blank">历史转折中的“杭派工程师”</a><br> ·  <a href="https://kb.cnblogs.com/page/602573/" target="_blank">如何提高代码质量？</a><br></div>» <a href="https://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate, cb_postType);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="https://home.cnblogs.com/u/wyb628/">LeoWang,</a><br>园龄：<a href="https://home.cnblogs.com/u/wyb628/" title="入园时间：2016-08-28">1年11个月</a><br>粉丝：<a href="https://home.cnblogs.com/u/wyb628/followers/">5</a><br>关注：<a href="https://home.cnblogs.com/u/wyb628/followees/">2</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow('ec3152b0-e46c-e611-9fc1-ac853d9f53cc')">+加关注</a></div><script>getFollowStatus('ec3152b0-e46c-e611-9fc1-ac853d9f53cc')</script></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style="display:none"></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk" type="text">&nbsp;<input onclick="zzk_go()" value="找找看" id="btnZzk" class="btn_my_zzk" type="button"></div>
+<div id="widget_my_google" class="div_my_zzk"><input name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk" type="text">&nbsp;<input onclick="google_go()" value="谷歌搜索" class="btn_my_zzk" type="button"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<div class="catListLink">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="https://www.cnblogs.com/wyb628/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="https://www.cnblogs.com/wyb628/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="https://www.cnblogs.com/wyb628/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="https://www.cnblogs.com/wyb628/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="https://www.cnblogs.com/wyb628/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+<ul>
+
+</ul>
+</div>
+</div></div><div id="sidebar_toptags" class="sidebar-block"></div><div id="sidebar_categories">
+<div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+<h3 class="catListTitle">随笔档案</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="https://www.cnblogs.com/wyb628/archive/2018/03.html">2018年3月 (10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="https://www.cnblogs.com/wyb628/archive/2018/02.html">2018年2月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="https://www.cnblogs.com/wyb628/archive/2017/10.html">2017年10月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="https://www.cnblogs.com/wyb628/archive/2017/09.html">2017年9月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="https://www.cnblogs.com/wyb628/archive/2017/08.html">2017年8月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="https://www.cnblogs.com/wyb628/archive/2017/07.html">2017年7月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="https://www.cnblogs.com/wyb628/archive/2017/05.html">2017年5月 (11)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="https://www.cnblogs.com/wyb628/archive/2017/04.html">2017年4月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="https://www.cnblogs.com/wyb628/archive/2017/03.html">2017年3月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="https://www.cnblogs.com/wyb628/archive/2017/02.html">2017年2月 (18)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_10" href="https://www.cnblogs.com/wyb628/archive/2016/11.html">2016年11月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_11" href="https://www.cnblogs.com/wyb628/archive/2016/09.html">2016年9月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_12" href="https://www.cnblogs.com/wyb628/archive/2016/08.html">2016年8月 (1)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/wyb628/p/7240061.html#4035117">1. Re:Spring动态切换多数据源解决方案</a></li>
+        <li class="recent_comment_body">如何解决多用户访问单例“sessionFactory”时共享“dataSource”变量？</li>
+        <li class="recent_comment_author">--弹指又十年</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/wyb628/p/7240061.html#4035116">2. Re:Spring动态切换多数据源解决方案</a></li>
+        <li class="recent_comment_body">前后写重了？</li>
+        <li class="recent_comment_author">--弹指又十年</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/wyb628/p/7682580.html#4004823">3. Re:Elastic-Job——分布式定时任务框架</a></li>
+        <li class="recent_comment_body">请问图片里zookeeper节点结构 显示用的是什么软件？</li>
+        <li class="recent_comment_author">--fanhuajun</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/wyb628/p/7240061.html#3960349">4. Re:Spring动态切换多数据源解决方案</a></li>
+        <li class="recent_comment_body">"注意：当切换数据源时，需要在service层之外，如果需要在service层中切换非默认数据源，则不能开启事务，而且下次使用时，线程仍然绑定，此时若需要使用默认数据源，则需要显示的手动切换数据源，否......</li>
+        <li class="recent_comment_author">--第一类间断点</li>
+        <li class="recent_comment_title"><a href="https://www.cnblogs.com/wyb628/p/6371827.html#3791282">5. Re:反射如何破坏单例模式</a></li>
+        <li class="recent_comment_body">博主，我想问一下，你的第二个单例模式为什么改成了懒汉模式？我发现还是按照第一个饱汉模式的话，还是可以生成两个不一样的实例。为什么呀？这个只跟私有构造器有关系吧，跟getInstance这个方法有关系？</li>
+        <li class="recent_comment_author">--东大小菜鸡</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="https://www.cnblogs.com/wyb628/p/6813985.html">1. 防止SpringMVC拦截器拦截js等静态资源文件(11554)</a></li><li><a href="https://www.cnblogs.com/wyb628/p/7240061.html">2. Spring动态切换多数据源解决方案(8019)</a></li><li><a href="https://www.cnblogs.com/wyb628/p/7682580.html">3. Elastic-Job——分布式定时任务框架(7504)</a></li><li><a href="https://www.cnblogs.com/wyb628/p/7243776.html">4. IDEA中Git的使用(6898)</a></li><li><a href="https://www.cnblogs.com/wyb628/p/6568361.html">5. Spring中配置DataSource的六种方式(6508)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="https://www.cnblogs.com/wyb628/p/7240061.html">1. Spring动态切换多数据源解决方案(3)</a></li><li><a href="https://www.cnblogs.com/wyb628/p/6371827.html">2. 反射如何破坏单例模式(1)</a></li><li><a href="https://www.cnblogs.com/wyb628/p/7682580.html">3. Elastic-Job——分布式定时任务框架(1)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="https://www.cnblogs.com/wyb628/p/7243776.html">1. IDEA中Git的使用(3)</a></li><li><a href="https://www.cnblogs.com/wyb628/p/6813985.html">2. 防止SpringMVC拦截器拦截js等静态资源文件(1)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2018 LeoWang,
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>

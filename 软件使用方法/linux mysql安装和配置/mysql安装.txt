@@ -1,0 +1,28 @@
+mysql数据库的安装
+
+1）把安装文件拷贝到/home目录下
+
+2) tar -zxvf mysql*tar.gz
+
+3)
+
+	groupadd mysql (创建mysql组）
+	
+	useradd -g mysql mysql	(创建mysql用户，并放入到mysql组）
+
+	进入到mysql文件夹.
+	scripts/mysql_install_db --user=mysql（初始化数据库）
+	chown -R root .	(修改文件的所有者)
+	chown -R mysql data	(修改data文件夹的所有者)
+	chgrp -R mysql .	(改变用户组)
+	启动mysql
+	bin/mysqld_safe --user=mysql &	(表示以后台的方式启动)
+	检查一下，ok，启动正常	
+	
+	怎样进入mysql
+	
+	cd bin
+	./mysql -u root -p 回车
+	
+	如果希望在任何一个目录下都可以进入mysql,
+	则需要在/root/.bash_profile中添加路径。
